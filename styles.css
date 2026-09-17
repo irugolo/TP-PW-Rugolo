@@ -1,0 +1,96 @@
+/* Colores generales de la página. */
+:root {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #25324a;
+    background-color: #f1f5f9;
+    line-height: 1.6;
+}
+
+/* Incluye el padding y los bordes en el tamaño de cada elemento. */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+/* React muestra la página dentro de este contenedor. */
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    padding: 3rem 1.5rem;
+    color: #ffffff;
+    text-align: center;
+    background: linear-gradient(135deg, #1e40af, #0f766e);
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.2;
+}
+
+main {
+    width: min(900px, calc(100% - 2rem));
+    margin: 2rem auto;
+    padding: clamp(1.25rem, 4vw, 2.5rem);
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgb(15 23 42 / 8%);
+}
+
+p {
+    margin: 0 0 1rem;
+}
+
+p:last-child {
+    margin-bottom: 0;
+}
+
+a {
+    color: #1d4ed8;
+    text-underline-offset: 0.2em;
+}
+
+a:hover {
+    color: #0f766e;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 4px;
+}
+
+button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #1d4ed8;
+    color: #ffffff;
+    font: inherit;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1e40af;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+footer {
+    margin-top: auto;
+    padding: 1.5rem;
+    color: #475569;
+    text-align: center;
+    border-top: 1px solid #cbd5e1;
+}
