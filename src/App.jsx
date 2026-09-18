@@ -1,28 +1,26 @@
 import { useState } from 'react';
+import Header from './components/Header';
+import Hero from './components/Hero';
+import Catalogo from './components/Catalogo';
+import DetalleExperiencia from './components/DetalleExperiencia';
+import ComoFunciona from './components/ComoFunciona';
+import Footer from './components/Footer';
+import { experiencias } from './data/experiencias';
 
 export default function App() {
-    const [mensaje, setMensaje] = useState('Bienvenido a mi página web.');
+  const [seleccionada, setSeleccionada] = useState(null);
 
-    function saludar() {
-        setMensaje('¡Hola! Gracias por visitar mi página web.');
-    }
-
-    return (
-        <>
-            <header>
-                <h1>Mi página web</h1>
-            </header>
-
-            <main>
-                <p id="mensaje" aria-live="polite">{mensaje}</p>
-                <button id="boton-saludar" type="button" onClick={saludar}>
-                    Saludar
-                </button>
-            </main>
-
-            <footer>
-                <p>Mi página web</p>
-            </footer>
-        </>
-    );
+  return (
+    <div id="inicio">
+      <a className="saltar" href="#contenido">Saltar al contenido</a>
+      <Header />
+      <main id="contenido">
+        <Hero />
+        <Catalogo experiencias={experiencias} onSeleccionar={setSeleccionada} />
+        <ComoFunciona />
+      </main>
+      <Footer />
+      {seleccionada && <DetalleExperiencia experiencia={seleccionada} onCerrar={() => setSeleccionada(null)} />}
+    </div>
+  );
 }
