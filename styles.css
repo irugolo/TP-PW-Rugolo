@@ -566,3 +566,22 @@ main:focus { outline: none; }
     .detalle-foto { aspect-ratio: 1.4; }
     .detalle-pagina { padding-top: 24px; }
 }
+
+/* E3: formularios y administración, conservando la paleta del sitio. */
+.cuenta { max-width: 760px; margin-inline: auto; }
+.data-form { display: grid; gap: 1rem; margin-block: 1.5rem; max-width: 760px; }
+.form-field { display: grid; gap: .4rem; }
+.form-field label, .form-field legend { font-weight: 600; }
+.form-field input:not([type=checkbox]), .form-field select, .form-field textarea { width: 100%; padding: .75rem; border: 1px solid #777; border-radius: 8px; font: inherit; color: inherit; background: #fff; }
+.form-field textarea { min-height: 110px; resize: vertical; }
+.form-field fieldset { display: flex; flex-wrap: wrap; gap: 1rem; padding: .8rem; border: 1px solid #777; border-radius: 8px; }
+.field-error { color: #a12020; font-size: .9rem; }
+[aria-invalid=true] { border-color: #a12020 !important; }
+.data-form button, .admin button, .cuenta > button { padding: .7rem 1rem; border-radius: 8px; border: 1px solid currentColor; background: #fff; color: #263e34; font: inherit; cursor: pointer; }
+button:disabled { opacity: .6; cursor: wait; }
+.metricas { display: flex; flex-wrap: wrap; gap: 2rem; margin-block: 2rem; }
+.metricas dd { font-size: 2rem; margin: 0; }
+.admin-list { list-style: none; padding: 0; }
+.admin-list > li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; border-bottom: 1px solid #ccc; padding-block: 1rem; }
+.acciones { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+@media(max-width:600px) { .header { flex-wrap: wrap; gap: .75rem; } .header nav { flex-wrap: wrap; } }

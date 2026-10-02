@@ -1,21 +1,11 @@
 import { notFound } from 'next/navigation';
 import DetalleExperiencia from '../../../components/DetalleExperiencia';
-import { experiencias } from '../../../data/experiencias';
-
-// Los identificadores existentes también sirven como slugs estables en la URL.
-export function generateStaticParams() {
-  return experiencias.map(experiencia => ({ slug: experiencia.id }));
-}
-
-export async function generateMetadata({ params }) {
-  const { slug } = await params;
-  const experiencia = experiencias.find(item => item.id === slug);
-  return { title: experiencia?.nombre ?? 'Experiencia no encontrada' };
-}
-
+import { catalog } from '../../../lib/catalog';
+export const dynamic = 'force-dynamic';
 export default async function ExperienciaPage({ params }) {
-  const { slug } = await params;
-  const experiencia = experiencias.find(item => item.id === slug);
-  if (!experiencia) notFound();
-  return <DetalleExperiencia experiencia={experiencia} />;
+ const { slug } = await params;
+ let items;
+ try { items = await catalog(slug); } catch { return <section className="seccion"><h1>Experiencia</h1><p role="alert">No se pudo cargar la experiencia. Intentá más tarde.</p></section>; }
+ if (!items[0]) notFound();
+ return <DetalleExperiencia experiencia={items[0]} />;
 }

@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, feat/e2-nextjs]
   push:
     branches: [main]
 
@@ -20,4 +20,6 @@ jobs:
           node-version-file: '.nvmrc'
           cache: npm
       - run: npm ci
+      - run: npm run lint
+      - run: npm test
       - run: npm run build

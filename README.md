@@ -1,124 +1,106 @@
-# Fuera de Plan · E2
+# Fuera de Plan · E3
 
-Proyecto académico de experiencias sociales con Next.js 16.3.6, App Router,
-React y JavaScript. Conserva el diseño claro, las fotografías y los seis planes
-ficticios de la versión anterior. Los precios son ilustrativos: no hay reservas,
-pagos, autenticación, API ni base de datos todavía.
+Next.js App Router, React y Supabase. Mantiene la portada, fotografías, filtros y rutas de E2. Experiencias ficticias, precios ilustrativos en ARS; no hay reservas ni pagos.
 
-Repositorio: https://github.com/irugolo/TP-PW-Rugolo
+**Estado:** implementación y pruebas locales disponibles. Conexión remota pendiente del access token y selección del proyecto Supabase; no se aplicaron migraciones, no se asignó admin ni se verificaron sesiones remotas. Sin variables, catálogo y cuentas muestran indisponibilidad explícita; no simulan persistencia con datos locales.
 
-Producción: https://tp-pw-rugolo.vercel.app (conserva la versión aprobada de main).
-La migración E2 se revisa en una preview antes de fusionarla.
+## Desarrollo
 
-## Trabajar localmente
+Node >=22.12 (CI usa `.nvmrc`). Dependencias y CLI Supabase fijadas en `package-lock.json`.
 
-Recomendado: Node 22 LTS, versión 22.12 o posterior de esa serie, y npm.
-`.nvmrc` selecciona Node 22 si usás nvm; CI usa esa misma serie. Next 16 requiere
-Node >=20.9; este proyecto declara >=22.12. También se verificó localmente con
-Node 26.7 y npm 11.19.
-
-```bash
+```sh
 npm ci
+cp .env.example .env.local
 npm run dev
 ```
 
-Abrí http://localhost:3000. Al guardar se actualiza la vista local.
-Para detener el servidor, presioná **Ctrl + C** en esa terminal.
+Completar `.env.local` localmente, sin compartir su contenido:
 
-Para probar el resultado real de producción (con el servidor de desarrollo detenido):
+- `NEXT_PUBLIC_SUPABASE_URL`: URL del proyecto autorizado.
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: clave pública publishable (también admite anon heredada).
+- `APP_ORIGIN`: origen exacto, sin barra final; local `http://localhost:3000`.
 
-```bash
+No agregar claves secretas o service_role a estas variables. La aplicación no necesita claves privilegiadas. `.env*` está ignorado salvo `.env.example`, que solo contiene nombres vacíos.
+
+## Conexión y migraciones (pendiente)
+
+Usar la CLI instalada con `npx supabase`. No instalar globalmente ni levantar Docker.
+
+1. `npx supabase login`: ingresar el **access token** solo en la terminal. No confundirlo con una clave service_role.
+2. `npx supabase projects list`: seleccionar explícitamente el proyecto y confirmar si comparte base con producción. Si no existe, crear únicamente uno gratuito en la organización autorizada mediante CLI/API.
+3. `npx supabase link --project-ref REF`: utilizar la contraseña de DB solo en el prompt o mediante `SUPABASE_DB_PASSWORD` local, nunca en Git ni en mensajes.
+4. Inspeccionar esquema, triggers, permisos y `supabase_migrations.schema_migrations` con `npx supabase db query --linked`. Consultar `--help` para la sintaxis de esta versión. Guardar cualquier exportación fuera del repositorio; puede contener datos privados.
+5. Revisar posibles conflictos con `perfiles`, `experiencias`, funciones y triggers propuestos. La migración falla ante objetos incompatibles; **no** usa `DROP`, reset ni reemplazo silencioso. Adaptar mediante migración aditiva si ya existe esquema.
+6. `npx supabase db push --dry-run`, revisar el resultado; después `npx supabase db push`. No ejecutar `db reset` sobre la base remota.
+7. Consultar nuevamente tablas y políticas; ejecutar la verificación remota indicada abajo.
+
+`20261001000100_schema.sql` crea perfiles vinculados a `auth.users` por UUID (borrado de cuenta elimina su perfil), experiencias y políticas. Los usuarios existentes reciben perfil cliente. `20261001000200_demo.sql` reutiliza los seis planes originales por slug y usa `ON CONFLICT DO NOTHING`; no sobrescribe datos existentes. `src/data/experiencias.js` queda como fuente histórica de fixtures y formato monetario, no como fuente del catálogo en ejecución.
+
+## Auth, permisos y seguridad
+
+- `@supabase/ssr`: clientes de servidor y navegador; cookies renovadas en `src/proxy.js` para Next 16. `getUser()` valida identidad en cada página/operación protegida, sin confiar en `getSession()`.
+- `/auth`: registro, ingreso, recuperación y actualización de contraseña. Callback PKCE en `/auth/callback`; destinos internos fijos, sin redirecciones arbitrarias.
+- Registro público siempre cliente: trigger ignora metadata editable. Contraseñas solo en Supabase Auth.
+- `/mi-cuenta`: lee el perfil propio y modifica únicamente nombre y teléfono.
+- `/admin`: CRUD, detalle, publicación/borrador, confirmación de eliminación y métricas reales (total, publicadas, borradores, clientes).
+- RLS: visitantes ven publicados; clientes solo su perfil; admin gestiona experiencias. Permisos por columna impiden modificar rol, ID y fecha, incluso por API directa. Función `private.is_admin()` con `search_path` vacío evita recursión en políticas. `admin_metrics()` autoriza dentro de SQL y devuelve agregados, sin exponer perfiles ajenos.
+- IDs de experiencias inmutables; restricciones de texto, precio, arrays y valores permitidos también en SQL. Si una FK futura impide eliminar, la API devuelve conflicto y conserva datos. No hay relaciones ficticias con reservas inexistentes.
+- Mutaciones Route Handler requieren Origin exacto y JSON; no se confía en Host/Forwarded-Host para autorizar orígenes. Sin `APP_ORIGIN`, preview usa `https://${VERCEL_URL}` y local usa localhost:3000. Usar el mismo origen en callbacks y pruebas.
+
+**Asignación de admin:** pendiente de confirmar email/UUID con la autora. Solo mediante SQL privilegiado desde terminal, después de verificar el registro en `auth.users`; actualizar `perfiles.rol` para ese UUID exacto y consultar nuevamente. No hay endpoint de promoción ni claves secretas en la app. No ejecutar una promoción para una cuenta inferida.
+
+## Confirmación de correo y recuperación
+
+El archivo `supabase/config.toml` configura confirmación y longitud mínima 12 para entornos locales; **no modifica automáticamente el proyecto alojado**. Antes de habilitar preview, revisar la configuración Auth existente mediante Management API oficial y conservar sus opciones no relacionadas:
+
+- Confirmación por email habilitada (`mailer_autoconfirm: false`).
+- Contraseña mínima 12 (`password_min_length: 12`).
+- Site URL autorizada y allowlist con URLs exactas: `http://localhost:3000/auth/callback`, `http://localhost:3000/auth/callback?next=recovery` y sus equivalentes HTTPS del deployment preview seleccionado.
+- No usar comodines amplios. Mantener URLs de producción existentes si la base es compartida; no cambiar Site URL de producción para una prueba.
+- Mantener plantillas PKCE compatibles con `ConfirmationURL`, que retornan `code` al callback. El enlace debe abrirse en el mismo navegador donde comenzó el flujo PKCE. Un enlace inválido/expirado muestra error y permite solicitar otro.
+
+No se enviaron correos ni se crearon cuentas reales durante esta implementación. La prueba final de registro/recuperación debe usar una cuenta propia autorizada.
+
+## Evidencia E3
+
+`DataForm.jsx` comparte esquemas Zod con el servidor: tipos, requeridos, longitudes, formatos, límites y enums; objetos estrictos rechazan atributos adicionales. Perfil y experiencias llaman **fetch explícito** a `/api/perfil` y `/api/experiencias[/id]` (PATCH/POST). El servidor verifica identidad, rol y datos antes de persistir con la sesión normal del usuario. DELETE también usa fetch y confirmación.
+
+Formularios con labels, errores asociados, foco al primer error, mensajes `role=status`, bloqueo de doble envío, timeout y conservación de texto ante fallos. `response.ok` obligatorio. El resultado guardado actualiza campos/lista/métricas mediante estado React sin recargar la página. El catálogo se consulta desde Supabase en cada navegación SSR; hay estados vacío, carga y error.
+
+## Verificación por terminal
+
+```sh
+npm run lint
+npm test
 npm run build
 npm run start
 ```
 
-`build` ejecuta `next build`; `start` ejecuta `next start`. Next genera `.next/`.
-No usamos exportación estática ni una salida `dist`: se conservan las capacidades
-de servidor para las próximas entregas. Que los datos locales permitan prerenderizar
-estas páginas no convierte el proyecto en `output: "export"`.
+`npm test` ejecuta validación y HTTP (JSON, origen, errores sanitizados) y aplica las migraciones en PostgreSQL embebido PGlite sin Docker. Comprueba seed no duplicado, registro cliente pese a metadata admin, aislamiento de perfiles, denegación de escalada, publicación, CRUD y reconsulta, métricas y restricciones. **auth.uid está emulado en esa prueba: no demuestra sesiones reales de Supabase.**
 
-## Rutas y archivos
+Para probar el proyecto remoto autorizado, guardar en un archivo `.env.remote` ignorado las variables públicas, `TEST_ORIGIN` y tokens access/refresh de **dos sesiones normales existentes y autorizadas**, una cliente y una admin: `TEST_CLIENT_ACCESS_TOKEN`, `TEST_CLIENT_REFRESH_TOKEN`, `TEST_ADMIN_ACCESS_TOKEN`, `TEST_ADMIN_REFRESH_TOKEN`. No usar service_role, compartir tokens ni registrarlos en salida.
 
-| Ruta | Archivo | Función |
-| --- | --- | --- |
-| `/` | `src/app/page.js` | Portada y Cómo funciona |
-| `/experiencias` | `src/app/experiencias/page.js` | Catálogo con filtros |
-| `/experiencias/[slug]` | `src/app/experiencias/[slug]/page.js` | Detalle, por ejemplo `/experiencias/cocina` |
-| Ruta o experiencia inexistente | `src/app/not-found.js` | 404 con enlace al catálogo |
-
-- `src/app/layout.js`: `html lang="es"`, metadata, estilos, encabezado, main y pie compartidos.
-- `src/components/`: componentes visuales. Editá la portada en `Hero.jsx` y el resto en el componente correspondiente.
-- `src/data/experiencias.js`: nombres, descripciones, zonas, duración, categorías y precios.
-  El `id` estable sirve de slug: cambiarlo cambia el enlace del detalle.
-- `styles.css`: estilos globales y variables de color al comienzo.
-- `public/images/`: fotos locales; licencia y fuentes en `PROCEDENCIA.md`.
-- `vercel.json`: configuración Next.js aplicada por despliegue, sin modificar ajustes globales del proyecto.
-
-Las páginas, layout, Header, Hero, ComoFunciona, Footer y DetalleExperiencia son
-componentes de servidor. `Catalogo` usa `use client` porque tiene `useState` y
-botones de filtro. `TarjetaExperiencia` queda dentro de ese árbol cliente: no es
-un componente de servidor independiente, aunque no necesite estado propio.
-Los componentes cliente también reciben HTML inicial; no desactivamos SSR.
-
-La navegación usa `next/link` y las fotos `next/image` con dimensiones y `sizes`.
-El detalle reemplaza al modal anterior, sin dos implementaciones duplicadas.
-La navegación móvil mantiene los enlaces visibles; no hay menú colapsable.
-La selección de filtros usa `aria-pressed`, marca visual y anuncio del resultado.
-
-No agregamos `loading.js`, `error.js`, fetch o Server Actions sin una necesidad
-real de esta etapa con datos locales. `not-found.js` sí maneja casos reales.
-En Next 16 `params` se espera con `await`; no asumimos que `fetch` almacene todas
-las respuestas en caché por defecto. Cuando se incorpore la API se elegirá esa
-política expresamente. Ningún secreto debe viajar como prop al cliente ni llevar
-el prefijo `NEXT_PUBLIC_`.
-
-Referencias: [instalación](https://nextjs.org/docs/app/getting-started/installation),
-[servidor y cliente](https://nextjs.org/docs/app/getting-started/server-and-client-components),
-[rutas dinámicas](https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes),
-[fetch](https://nextjs.org/docs/app/api-reference/functions/fetch).
-
-## Verificación E2 (24/09/2026)
-
-| Criterio | Evidencia local | Límites |
-| --- | --- | --- |
-| Semántica | Layout con header/nav/main/footer; secciones y artículos; un h1 por ruta; enlaces para navegar y botones para filtrar | Revisión manual, no certificación |
-| Responsive | Landing, catálogo y detalle inspeccionados en Chrome a 360, 768 y 1440 px; sin desbordamiento horizontal observado | No se probaron dispositivos físicos ni todos los navegadores |
-| Accesibilidad | Tab, Enter, Space, foco visible y salto al main probados; filtros 4/4/5/6; zoom real al 200 % sin desbordamiento; 404 navegable | Sin auditoría automatizada ni prueba completa con lector de pantalla; regla reduced-motion revisada en CSS |
-| Consistencia visual | Misma paleta, tipografía, imágenes, tarjetas y controles en las rutas; detalle adaptado al diseño existente | Pendiente revisión de la autora |
-
-- `npm ci`, `npm run build` y `npm run start`: correctos.
-- HTTP 200 en inicio, catálogo y los seis detalles; HTTP 404 en `/no-existe` y `/experiencias/no-existe`.
-- Navegación por enlaces y recarga directa de detalle verificadas. Sin errores de consola/hidratación observados en las pruebas.
-- Contraste calculado: gris sobre fondo cálido 5,62:1; gris sobre sección gris 5,01:1;
-  lavanda oscuro sobre fondo 7,15:1; texto del filtro seleccionado 10,39:1.
-- No había lint configurado. No se añadió una herramienta nueva solo para esta migración;
-  el build de Next 16 no equivale a ejecutar un linter.
-- Eliminados `index.html`, `src/main.jsx`, `src/App.jsx`, `vite.config.js` y dependencias exclusivas de Vite.
-- `.gitignore` excluye `.next`, dependencias, salidas antiguas y credenciales. Se conserva `package-lock.json`.
-
-## GitHub y Vercel
-
-CI instala con `npm ci` y compila en cada PR hacia main y push a main. Vercel
-publica mediante su integración GitHub existente: no hay otro pipeline de despliegue.
-`vercel.json` selecciona Next.js, `npm ci`, `npm run build`, `npm run dev` y restablece
-la salida automática del framework. Esa configuración viaja en la rama E2 y no
-cambia la rama de producción mientras el PR siga abierto.
-
-La CLI de Vercel está instalada. Para vincular esta carpeta una vez autenticada:
-
-```bash
-vercel login
-vercel link --project tp-pw-rugolo --scope programacion-web
+```sh
+node --env-file=.env.remote scripts/verify-remote.mjs
 ```
 
-Elegir el proyecto existente; no crear uno nuevo. `.vercel/` no se versiona.
-No compartir tokens o contraseñas. La sesión de CLI estaba pendiente durante las
-pruebas locales; los checks y la preview se revisan por GitHub.
+El script no crea usuarios ni envía correos. Prueba Route Handlers y API directa con sesiones normales, no acceso a admin, payloads inválidos, perfiles ajenos, elevación de rol, CRUD y reconsulta. Crea una experiencia temporal identificada `e3-verificacion-*` y la elimina al finalizar; si el proceso se interrumpe, retirar únicamente esa fila. Requiere acceso HTTP a la preview (si Vercel tiene protección, usar una sesión/bypass autorizado por terminal). No ejecutado todavía por falta de credenciales.
 
-Después de aprobar E2:
+**Revisión visual pendiente a cargo de la autora:** 360/768/1440 px, zoom 200 %, teclado/foco, anuncios con lector de pantalla, formularios válidos/erróneos y fallo de red, registro y recuperación con correo propio. No se abrió ni automatizó ningún navegador en E3. La evidencia visual de E2 permanece en el historial del PR #3, no se asume válida para los nuevos formularios.
 
-1. Revisar CI y preview del PR; probar navegación, filtros y detalles.
-2. Fusionar a main solamente con aprobación.
-3. Esperar el despliegue automático Production/Ready del nuevo commit.
-4. Abrir la URL pública y recargar `/experiencias/cocina`; probar filtros y 404.
-5. Confirmar en los logs que se ejecutó Next.js. No usar `vercel --prod` durante la revisión.
+## GitHub y preview
+
+Rama E3 derivada de `feat/e2-nextjs`; PR apilado sobre E2 para no duplicar su revisión. CI ejecuta instalación limpia, lint, tests y build. No fusionar ni usar `vercel --prod`.
+
+Configurar las variables públicas y `APP_ORIGIN` únicamente para Preview y la rama E3 mediante `vercel env add ... preview feat/e3-supabase-auth`, ingresando valores por stdin/prompt sin imprimirlos. Sin `APP_ORIGIN`, se usa la URL exacta de deployment de Vercel. Recompilar tras configurar variables `NEXT_PUBLIC_*`. Si preview comparte DB de producción, las escrituras de preview afectan esa misma base: no aplicar cambios incompatibles ni alterar su Auth sin revisar el impacto.
+
+## Documentación contrastada
+
+- [Supabase SSR y Proxy para Next 16](https://supabase.com/docs/guides/auth/server-side/creating-a-client)
+- [Auth por email y contraseña](https://supabase.com/docs/guides/auth/passwords)
+- [RLS y políticas](https://supabase.com/docs/guides/database/postgres/row-level-security)
+- [CLI oficial mediante npm](https://supabase.com/docs/guides/local-development/cli/getting-started)
+
+Se consultó el material local de clase “08-clase Supabase-08.pptx.pdf”: relaciones PK/FK, CRUD, Auth, aislamiento por fila y separación de claves privilegiadas.
+
+Verificación local realizada el 01/10/2026: `npm ci`, lint, 10 pruebas y build correctos. HTTP: inicio/catálogo/auth 200, ruta inexistente 404, admin/cuenta redirigen a auth sin contenido protegido y mutación con origen ajeno devuelve 403. Next puede emitir la redirección como meta refresh con HTTP 200 cuando ya empezó el streaming de `loading.js`; la prueba comprueba el destino y ausencia del panel, no solo el código HTTP.

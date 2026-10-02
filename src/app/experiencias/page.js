@@ -1,8 +1,10 @@
 import Catalogo from '../../components/Catalogo';
-import { experiencias } from '../../data/experiencias';
-
+import { catalog } from '../../lib/catalog';
 export const metadata = { title: 'Experiencias' };
-
-export default function ExperienciasPage() {
-  return <Catalogo experiencias={experiencias} />;
+export const dynamic = 'force-dynamic';
+export default async function ExperienciasPage() {
+ let items;
+ try { items = await catalog(); }
+ catch { return <section className="seccion"><h1>Experiencias</h1><p role="alert">El catálogo no está disponible. Intentá nuevamente más tarde.</p></section>; }
+ return <Catalogo experiencias={items} />;
 }

@@ -6,6 +6,7 @@ export default function Header() {
       <Link className="marca" href="/" aria-label="Fuera de Plan, inicio">fuera de plan<span aria-hidden="true">.</span></Link>
       <nav aria-label="Navegación principal">
         <Link href="/experiencias">Experiencias</Link>
+        <Link href="/mi-cuenta">Mi cuenta</Link>
         <Link href="/#como-funciona">Cómo funciona</Link>
       </nav>
     </header>

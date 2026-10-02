@@ -19,6 +19,7 @@ export default function Catalogo({ experiencias }) {
         {filtros.map(opcion => <button key={opcion} aria-pressed={filtro === opcion} onClick={() => setFiltro(opcion)}>{filtro === opcion && <span aria-hidden="true">✓ </span>}{opcion}</button>)}
       </div>
       <div className="catalogo-notas"><p>Experiencias ficticias · Precios ilustrativos en pesos argentinos.</p><p role="status">{visibles.length} planes para explorar</p></div>
+      {visibles.length === 0 && <p>No hay experiencias para este filtro.</p>}
       <div className="grilla">{visibles.map(experiencia => <TarjetaExperiencia key={experiencia.id} experiencia={experiencia} />)}</div>
     </section>
   );
