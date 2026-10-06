@@ -1,0 +1,6 @@
+.env*
+supabase/.temp/
+supabase/.branches/
+.git/
+.next/
+node_modules/

@@ -10,6 +10,7 @@ for (const name of ['NEXT_PUBLIC_SUPABASE_URL','NEXT_PUBLIC_SUPABASE_PUBLISHABLE
 }
 const url = env.NEXT_PUBLIC_SUPABASE_URL, key = env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 const origin = new URL(env.TEST_ORIGIN).origin;
+const previewHeaders = env.TEST_VERCEL_BYPASS_SECRET ? { 'x-vercel-protection-bypass': env.TEST_VERCEL_BYPASS_SECRET } : {};
 assert.ok(origin === env.TEST_ORIGIN, 'TEST_ORIGIN debe ser un origen exacto sin barra final.');
 async function session(kind) {
  const cookies = new Map();
@@ -24,10 +25,11 @@ const client = await session('CLIENT'), admin = await session('ADMIN');
 assert.notEqual(client.user.id,admin.user.id);
 const id = `e3-verificacion-${Date.now()}`;
 async function call(path,method,body,actor,customOrigin=origin) {
- const response = await fetch(origin+path,{method,headers:{...actor?.headers(),origin:customOrigin,'content-type':'application/json'},body:body === undefined ? undefined : JSON.stringify(body),redirect:'manual'});
+ const response = await fetch(origin+path,{method,headers:{...previewHeaders,...actor?.headers(),origin:customOrigin,'content-type':'application/json'},body:body === undefined ? undefined : JSON.stringify(body),redirect:'manual',signal:AbortSignal.timeout(15000)});
  return {response,data:await response.json()};
 }
 let created = false;
+let originalProfile;
 try {
  assert.equal((await call('/api/experiencias','POST',{},null)).response.status,401);
  assert.equal((await call('/api/experiencias','POST',{},client)).response.status,403);
@@ -35,7 +37,7 @@ try {
  assert.equal((await call('/api/perfil','PATCH',{nombre:'',telefono:''},client)).response.status,422);
  assert.equal((await call('/api/perfil','PATCH',{nombre:'Prueba',telefono:'',rol:'admin'},client)).response.status,422);
  for(const actor of [null,client]) {
-  const response = await fetch(origin+'/admin',{headers:actor?.headers(),redirect:'manual'});
+  const response = await fetch(origin+'/admin',{headers:{...previewHeaders,...actor?.headers()},redirect:'manual',signal:AbortSignal.timeout(15000)});
   const target = actor ? '/mi-cuenta' : '/auth';
   if (response.status === 307) assert.ok(response.headers.get('location')?.includes(target));
   else { assert.equal(response.status,200); const html = await response.text(); assert.ok(html.includes('id="__next-page-redirect"') && html.includes(`url=${target}`)); assert.ok(!html.includes('Agregar experiencia')); }
@@ -44,8 +46,10 @@ try {
  const foreign = await client.db.from('perfiles').update({nombre:'No debe guardarse'}).eq('id',admin.user.id).select();
  assert.ok(foreign.error || foreign.data.length === 0);
  const profile = await client.db.from('perfiles').select('nombre,telefono').eq('id',client.user.id).single();assert.ok(!profile.error);
- assert.equal((await call('/api/perfil','PATCH',profile.data,client)).response.status,200);
- assert.deepEqual((await client.db.from('perfiles').select('nombre,telefono').eq('id',client.user.id).single()).data,profile.data);
+ originalProfile = profile.data;
+ const changedProfile = {...profile.data,nombre:`Verificación E3 ${Date.now()}`};
+ assert.equal((await call('/api/perfil','PATCH',changedProfile,client)).response.status,200);
+ assert.deepEqual((await client.db.from('perfiles').select('nombre,telefono').eq('id',client.user.id).single()).data,changedProfile);
  const draft = {...experiencias[0],id,estado:'borrador'};
  const denied = await client.db.from('experiencias').insert(draft);assert.ok(denied.error);
  assert.equal((await call('/api/experiencias','POST',draft,admin)).response.status,201);created=true;
@@ -59,9 +63,17 @@ try {
  assert.ok((await client.db.rpc('admin_metrics')).error);assert.ok(!(await admin.db.rpc('admin_metrics')).error);
  console.log('OK: sesiones normales, Route Handlers, persistencia consultada nuevamente y RLS remota.');
 } finally {
- if(created) {
+ try { if(created) {
   const result = await call(`/api/experiencias/${id}`,'DELETE',undefined,admin);
   assert.equal(result.response.status,200,`Limpiar manualmente la fila temporal ${id}.`);
   assert.equal((await admin.db.from('experiencias').select('id').eq('id',id)).data?.length,0);
+ } } finally {
+  if (originalProfile) {
+   // A newly registered profile can have an empty name. Restore using permitted
+   // columns and the client's normal session, even if HTTP verification failed.
+   const restored = await client.db.from('perfiles').update(originalProfile).eq('id',client.user.id).select('nombre,telefono').single();
+   assert.equal(restored.error,null);
+   assert.deepEqual(restored.data,originalProfile);
+  }
  }
 }
