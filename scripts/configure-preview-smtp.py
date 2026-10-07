@@ -16,15 +16,25 @@ ROOT = Path(__file__).resolve().parent.parent
 
 def run_cli(action, workdir, env):
     args = ['npx', 'supabase', 'config', action, '--project-ref', PROJECT,
-            '--workdir', str(workdir)]
+            '--workdir', str(workdir), '--output-format', 'json']
     if action == 'push':
         args.append('--yes')
-    result = subprocess.run(args, cwd=ROOT, env=env, capture_output=True,
-                            text=True, timeout=120, check=False)
+    try:
+        result = subprocess.run(args, cwd=ROOT, env=env, capture_output=True,
+                                text=True, timeout=120, check=False)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError('La CLI agotó el tiempo durante config ' + action + '. Revisar el estado remoto antes de reintentar.') from None
+    except OSError:
+        raise RuntimeError('No se pudo iniciar la CLI de Supabase. Revisá que npm/npx estén disponibles.') from None
     # Never print raw CLI output: it may contain configuration or secret fields.
     if result.returncode:
         raise RuntimeError('La CLI no pudo completar config ' + action + '.')
-    data = json.loads(result.stdout)
+    try:
+        data = json.loads(result.stdout)
+    except ValueError:
+        raise RuntimeError('La CLI no devolvió JSON válido durante config ' + action + '. Su salida se omitió para proteger secretos.') from None
+    if not isinstance(data, dict):
+        raise RuntimeError('La CLI devolvió un formato inesperado durante config ' + action + '.')
     if data.get('error'):
         raise RuntimeError('La CLI informó un error en config ' + action + '.')
     return data

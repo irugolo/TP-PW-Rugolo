@@ -17,7 +17,7 @@ const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_P
 const id = `e3-rls-${randomUUID()}`;
 const insertedId = `${id}-i`;
 function sql(query) {
-  const result = JSON.parse(execFileSync('npx', ['supabase', 'db', 'query', '--linked', query], {
+  const result = JSON.parse(execFileSync('npx', ['supabase', 'db', 'query', '--linked', '--output-format', 'json', query], {
     encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60000,
   }));
   assert.ok(!result.error, 'La consulta de preparación o limpieza falló.');

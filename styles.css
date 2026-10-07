@@ -41,7 +41,7 @@ button, .boton {
     transition: background-color .2s, color .2s, transform .2s;
 }
 
-button:focus-visible, a:focus-visible {
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
     outline: 3px solid var(--acento-oscuro);
     outline-offset: 5px;
 }
