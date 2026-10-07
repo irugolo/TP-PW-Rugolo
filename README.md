@@ -2,7 +2,7 @@
 
 Next.js App Router, React y Supabase. Mantiene la portada, fotografías, filtros y rutas de E2. Experiencias ficticias, precios ilustrativos en ARS; no hay reservas ni pagos.
 
-**Estado:** Supabase Preview conectado, migraciones aplicadas y seis experiencias consultadas desde la base real. Organización **Fuera de Plan**, plan **Free**, proyecto **fuera-de-plan-preview** (`kulvagylilutnpckpiuw`), región São Paulo (`sa-east-1`). Producción conserva su catálogo estático y no comparte esta base. Faltan el registro confirmado de la autora, la asignación de admin y las pruebas con sesiones normales cliente/admin.
+**Estado:** Supabase Preview conectado, migraciones aplicadas y seis experiencias consultadas desde la base real. Organización **Fuera de Plan**, plan **Free**, proyecto **fuera-de-plan-preview** (`kulvagylilutnpckpiuw`), región São Paulo (`sa-east-1`). Producción conserva su catálogo estático y no comparte esta base. La autora ya se registró, confirmó su correo y recibió admin tras verificar su UUID. Faltan las pruebas automatizadas con sesiones normales cliente/admin y completar validación manual y recuperación.
 
 Registro habilitado en [la preview configurada](https://tp-pw-rugolo-mlo1e0avn-programacion-web.vercel.app/auth). Elegir Registrarme, usar el email autorizado y una contraseña propia de al menos 12 caracteres; abrir el correo de confirmación en el mismo navegador y perfil. Si Vercel solicita acceso, ingresar con la cuenta propietaria de Vercel. No compartir contraseña, enlace de confirmación ni cookies.
 
@@ -55,7 +55,7 @@ Para futuros entornos, usar la CLI instalada con `npx supabase`. No instalar glo
 - IDs de experiencias inmutables; restricciones de texto, precio, arrays y valores permitidos también en SQL. Si una FK futura impide eliminar, la API devuelve conflicto y conserva datos. No hay relaciones ficticias con reservas inexistentes.
 - Mutaciones Route Handler requieren Origin exacto y JSON; no se confía en Host/Forwarded-Host para autorizar orígenes. Sin `APP_ORIGIN`, preview usa `https://${VERCEL_URL}` y local usa localhost:3000. Usar el mismo origen en callbacks y pruebas.
 
-**Asignación de admin:** email `irugolo@itba.edu.ar` confirmado por la autora; pendiente de que se registre y confirme el correo en Auth. Solo mediante SQL privilegiado desde terminal, después de verificar el registro en `auth.users`; actualizar `perfiles.rol` para ese UUID exacto y consultar nuevamente. No hay endpoint de promoción ni claves secretas en la app. No ejecutar una promoción para una cuenta inferida.
+**Asignación de admin:** realizada el 06/10/2026 tras comprobar el registro y la confirmación del correo autorizado. El rol admin se volvió a consultar y quedó persistido. Solo mediante SQL privilegiado desde terminal, después de verificar el registro en `auth.users`; actualizar `perfiles.rol` para ese UUID exacto y consultar nuevamente. No hay endpoint de promoción ni claves secretas en la app. No ejecutar una promoción para una cuenta inferida.
 
 ## Confirmación de correo y recuperación
 
@@ -119,5 +119,24 @@ Verificación local realizada el 01/10/2026: `npm ci`, lint, 10 pruebas y build 
 - `node --env-file=.env.local scripts/verify-public.mjs`: seis planes persistidos consultados dos veces; perfiles y métricas denegados para anónimos.
 - `node --env-file=.env.local scripts/verify-anonymous-rls.mjs`: crea un borrador temporal mediante CLI únicamente en este proyecto de Preview; comprueba con clave pública que está oculto y que INSERT/UPDATE/DELETE devuelven `42501`; elimina las filas temporales en `finally` y comprueba su ausencia. No crea usuarios, no envía correos ni usa service_role en las aserciones.
 - Preview HTTP por `vercel curl`: catálogo, detalle y registro disponibles; `/admin` redirige a `/auth` sin panel; PATCH perfil y POST experiencias anónimos devuelven 401; origen ajeno devuelve 403; callback inválido devuelve 307 a un destino interno fijo.
-- Lint, diez pruebas locales y build aprobados. Estas pruebas locales usan PostgreSQL embebido; las remotas anteriores prueban el rol anónimo real. Cliente/admin, edición de perfil, CRUD autenticado y recuperación siguen pendientes del registro y sesiones de prueba autorizadas.
+- Lint, diez pruebas locales y build aprobados. Estas pruebas locales usan PostgreSQL embebido; las remotas anteriores prueban el rol anónimo real. Cliente/admin, edición de perfil, CRUD autenticado y recuperación siguen pendientes de una cuenta cliente confirmada y sesiones de prueba autorizadas.
 - Auditoría de dependencias de ejecución: sin vulnerabilidades. La auditoría completa detectó un aviso en `braces` (herramientas de lint) sin parche compatible disponible al consultar; no se aplicó el downgrade mayor sugerido por `npm audit --force`.
+
+
+## Pruebas manuales y siguiente verificación autenticada
+
+La autora informó que el CRUD de administrador (crear, editar, publicar, despublicar y eliminar) funciona y que visualmente ve bien la web. Esta es evidencia manual comunicada por la autora, no una ejecución automática ni una auditoría de teclado/lector de pantalla. Las mejoras de imágenes quedaron para después. Los casos de campos inválidos, fallo de red y recuperación de contraseña todavía no fueron confirmados.
+
+Existe una cuenta admin; falta la cuenta cliente. Antes de registrarla se necesita un SMTP autorizado para entregar su confirmación, sin agregar al cliente al equipo de Supabase y sin desactivar confirmaciones.
+
+Cuando existan ambas cuentas confirmadas, se pueden ejecutar pruebas sin copiar tokens ni compartir contraseñas con el agente:
+
+1. En una terminal del proyecto: `npm run dev` (localhost:3000, usando `.env.local` de la base Preview).
+2. En otra terminal: `python3 scripts/verify-interactive.py`.
+3. Ingresar los emails y contraseñas de las dos cuentas propias en los prompts locales; las contraseñas no se muestran.
+
+El asistente autentica contra Supabase, verifica los roles e invoca `verify-remote.mjs` con los tokens solo en memoria. Comprueba las Route Handlers del servidor local y la base remota Preview, modifica/restaura el perfil de prueba y crea/elimina una experiencia temporal. Al terminar intenta revocar únicamente sus propias sesiones (no la sesión del navegador). No guarda contraseñas/tokens en archivos ni los pasa como argumentos. Si se interrumpe abruptamente, revisar posibles fixtures como indica la sección de verificación remota.
+
+El asistente se verificó con lint y controles de sintaxis; su ejecución completa sigue pendiente de las dos cuentas y las credenciales ingresadas localmente por la autora.
+
+Para usar Gmail como remitente de pruebas, la autora autorizó SMTP mediante una contraseña de aplicación de Google. Debe generarla en su cuenta con verificación en dos pasos y ejecutar `python3 scripts/configure-preview-smtp.py`. El script pide el email y la contraseña de aplicación de forma oculta; autentica por TLS sin enviar correos y configura únicamente el proyecto Preview mediante la sesión nativa de Supabase CLI. La clave se transmite a Supabase para el servicio de correo, nunca a Vercel ni a la aplicación web; no se guarda en archivos locales o argumentos. El TOML temporal contiene una referencia a una variable de entorno y se elimina al terminar. `supabase/.temp/smtp-check.json` guarda solo el resultado no secreto. No modifica Production, roles, cuotas ni desactiva confirmación. La entrega del correo solo se verifica después mediante registro real. La configuración SMTP sigue pendiente de que la autora ejecute ese paso.
