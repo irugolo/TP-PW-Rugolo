@@ -1,0 +1,22 @@
+// Read-only checks with the public key; no credentials, accounts or emails created.
+import assert from 'node:assert/strict';
+import { createClient } from '@supabase/supabase-js';
+const { NEXT_PUBLIC_SUPABASE_URL: url, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key } = process.env;
+assert.ok(url && key, 'Configurá las variables públicas en .env.local.');
+const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+const first = await db.from('experiencias').select('id,estado').order('id');
+assert.equal(first.error, null);
+assert.equal(first.data.length, 6, 'Se esperan los seis planes iniciales de demostración.');
+assert.ok(first.data.every(item => item.estado === 'publicado'));
+const second = await db.from('experiencias').select('id,estado').order('id');
+assert.equal(second.error, null);
+assert.deepEqual(second.data, first.data);
+const drafts = await db.from('experiencias').select('id').eq('estado', 'borrador');
+assert.equal(drafts.error, null);
+assert.deepEqual(drafts.data, []);
+const profiles = await db.from('perfiles').select('id');
+assert.ok(profiles.error, 'Anónimo no debe leer perfiles.');
+const metrics = await db.rpc('admin_metrics');
+assert.ok(metrics.error, 'Anónimo no debe leer métricas.');
+console.log('OK: catálogo remoto consultado dos veces; anónimo sin borradores, perfiles ni métricas.');
+console.log('Pendientes: sesiones cliente/admin, mutaciones y recuperación por correo.');

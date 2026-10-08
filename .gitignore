@@ -13,3 +13,6 @@ out/
 *.key
 .npmrc
 .vercel/
+
+__pycache__/
+*.pyc

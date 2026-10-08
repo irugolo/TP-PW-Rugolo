@@ -6,14 +6,29 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "eslint .",
+    "test": "node --import tsx --experimental-test-module-mocks --test tests/*.test.js tests/ui/*.test.jsx"
   },
   "dependencies": {
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.117.2",
     "next": "^16.3.6",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "server-only": "0.0.1",
+    "zod": "4.6.5"
   },
   "engines": {
     "node": ">=22.12.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@testing-library/react": "^16.3.3",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.8",
+    "jsdom": "^30.1.2",
+    "supabase": "2.119.0",
+    "tsx": "^4.23.15"
   }
 }
