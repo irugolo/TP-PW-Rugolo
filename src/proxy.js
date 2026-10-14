@@ -16,4 +16,4 @@ export async function proxy(request) {
  response.headers.set('Cache-Control', 'private, no-store');
  return response;
 }
-export const config = { matcher: ['/((?!_next/static|_next/image|favicon.ico|images/).*)'] };
+export const config = { matcher: ['/((?!api/webhooks/mercadopago|_next/static|_next/image|favicon.ico|images/).*)'] };
