@@ -7,6 +7,7 @@ export async function POST(request,{params}) {
  try {
   checkOrigin(request);const {id}=await params;if(!z.uuid().safeParse(id).success)return Response.json({error:'Pedido inválido.'},{status:400});
   const {db,user}=await identity();const cfg=await verifyTestSeller();
+  if(!cfg.secret)return Response.json({error:'Falta terminar la configuración del webhook de prueba.'},{status:503});
   const base=new URL(cfg.base);if(base.protocol!=='https:'||base.origin!==cfg.base||base.hostname==='tp-pw-rugolo.vercel.app')throw Error('Invalid preview origin');
   const {data:order,error}=await db.from('pedidos_demo').select('*').eq('id',id).eq('propietario',user.id).maybeSingle();
   if(error)throw error;if(!order)return Response.json({error:'Pedido no encontrado.'},{status:404});
