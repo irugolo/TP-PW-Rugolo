@@ -1,3 +1,4 @@
+import {WEBHOOK_URL} from '../../../../../../supabase/functions/_shared/payment-webhook.js';
 import {z} from 'zod';
 import {identity} from '../../../../../lib/access';
 import {checkOrigin,failure} from '../../../../../lib/http';
@@ -20,7 +21,7 @@ export async function POST(request,{params}) {
   const lock=await service.from('pedidos_demo').update({preferencia_estado:'creando'}).eq('id',id).eq('preferencia_estado','nueva').select('id').maybeSingle();
   if(lock.error)throw lock.error;if(!lock.data)return Response.json({error:'La preferencia está en proceso o requiere revisión. No se creará un cobro duplicado.'},{status:409});
   claimed=id;
-  const preference=await mpRequest('/checkout/preferences',{method:'POST',body:{items:[{id:order.experiencia_id,title:order.nombre,description:order.descripcion,quantity:order.cantidad,unit_price:Number(order.precio),currency_id:'ARS'}],external_reference:id,back_urls:{success:cfg.base+'/pedidos/'+id,pending:cfg.base+'/pedidos/'+id,failure:cfg.base+'/pedidos/'+id},notification_url:cfg.base+'/api/webhooks/mercadopago',auto_return:'approved',expires:true,expiration_date_to:new Date(Date.now()+30*60000).toISOString()}});
+  const preference=await mpRequest('/checkout/preferences',{method:'POST',body:{items:[{id:order.experiencia_id,title:order.nombre,description:order.descripcion,quantity:order.cantidad,unit_price:Number(order.precio),currency_id:'ARS'}],external_reference:id,back_urls:{success:cfg.base+'/pedidos/'+id,pending:cfg.base+'/pedidos/'+id,failure:cfg.base+'/pedidos/'+id},notification_url:WEBHOOK_URL,auto_return:'approved',expires:true,expiration_date_to:new Date(Date.now()+30*60000).toISOString()}});
   const checkout=new URL(preference.init_point);
   if(checkout.protocol!=='https:'||checkout.hostname!=='www.mercadopago.com.ar'||!preference.id)throw Error('Invalid checkout URL');
   const saved=await service.from('pedidos_demo').update({preferencia_id:String(preference.id),checkout_url:checkout.href,preferencia_estado:'lista'}).eq('id',id);

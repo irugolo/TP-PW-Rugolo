@@ -27,3 +27,29 @@ Política de cupos: no hay reservas temporales. Se verifica disponibilidad al cr
 Pruebas locales: 25 JS aprobadas, lint y build. Incluyen estados pendiente/aprobado/rechazado/reembolsado, duplicados/fuera de orden, control de capacidad secuencial y RLS en PostgreSQL embebido. NO equivalen a concurrencia real multi-conexión ni compra completa MP. Firma HMAC probada con fixtures. Falta cobertura HTTP completa de checkout/webhook, fallos de API y concurrencia real.
 
 Bloqueos reales: credencial del vendedor pendiente de ingreso mediante `python3 scripts/configure-mp-test.py`, webhook secret y alcance de protección Vercel. No se habilitan pagos reales ni se declara E6 completa. El formulario se bloquea hasta completar credenciales verificadas. La autora confirmó login de Preview después de restauración.
+
+## Webhook público, preview privada (14 de octubre de 2026)
+
+Se descartó abrir Vercel por decisión de la autora. Se desplegó únicamente `mercadopago-webhook` en el proyecto Preview existente, mediante `supabase functions deploy ... --project-ref kulvagylilutnpckpiuw --use-api`. No se creó otro proyecto ni se cambió el plan. Solo esta función tiene `verify_jwt=false`; autentica las notificaciones con HMAC-SHA256 Web Crypto. No se usa bypass de Vercel.
+
+URL: https://kulvagylilutnpckpiuw.supabase.co/functions/v1/mercadopago-webhook
+
+Next.js y Edge comparten el mismo manejador. Solo acepta POST/payment, cuerpo limitado a 16 KB mientras se lee, data.id único y consistente, firma válida; consulta `/v1/payments/{id}` y exige live_mode=false, vendedor configurado, ARS, referencia UUID, monto y estado válidos. El destino Supabase está fijado a Preview. Ejecuta la misma RPC transaccional/idempotente, responde 200 únicamente después del commit y devuelve 503 ante errores para permitir reintentos. Las llamadas externas no siguen redirecciones y tienen un plazo conjunto de 18 segundos. No registra secretos ni devuelve datos de proveedores. Las nuevas preferencias usan esta URL; las existentes no se modificaron.
+
+Credenciales existentes del vendedor de prueba verificadas nuevamente con `/users/me` y cargadas solo en los secretos de Edge Preview mediante temporal privado eliminado. La clave de firma de Mercado Pago sigue pendiente. `python3 scripts/configure-mp-webhook.py` la pide oculta y la carga en Edge Preview y en la variable de la rama E4/E6 de Vercel. Usa temporal 0600 y limpieza en errores/interrupción/SIGTERM, sin secretos en argumentos ni logs. Después debe redesplegarse Vercel para habilitar checkout.
+
+Verificado: 30 pruebas JS, lint y build Next.js aprobados. Incluyen HTTP simulado de firma/método/cuerpo inválidos, entorno y pago ajeno, monto/referencia/estado inválidos, fallos de API/lectura/commit; SQL embebido verifica idempotencia y cupos. Endpoint remoto real: GET 405; POST 503 «Webhook sin configurar». Preview privada: acceso sin sesión 302. No se simularon estos resultados como una compra real ni se escribió un pago ficticio en remoto.
+
+Estado consultado por CLI: Preview ACTIVE_HEALTHY, producción INACTIVE. No se restauró ni modificó producción por el alcance de esta tarea.
+
+### Pasos pendientes de la autora
+
+1. En la aplicación de Mercado Pago correspondiente al vendedor de prueba: Webhooks, configuración de pruebas, URL anterior, evento Pagos/payment. Guardar. Usar la clave secreta de esa misma aplicación.
+2. En zsh, dentro del proyecto: `python3 scripts/configure-mp-webhook.py`. Pegar la clave en el prompt oculto. Informar solamente el mensaje final. No volver a ingresar el Access Token.
+3. Tras redespliegue y verificación del agente, abrir https://tp-pw-rugolo-e4e6-programacion-web.vercel.app y entrar a la web con la cuenta cliente isabelrugolo@gmail.com (Vercel puede pedir primero acceso a la preview).
+4. Elegir una experiencia, cantidad 1 y crear un pedido nuevo. Continuar a Mercado Pago usando el comprador de prueba, distinto del vendedor; usar exclusivamente las tarjetas de prueba indicadas en la documentación oficial, nunca una tarjeta real. Las cuentas de Mercado Pago son distintas de las cuentas cliente/admin de la web.
+5. Volver al pedido y actualizar su estado. Informar el ID del pedido y resultado visible, sin credenciales. El agente debe contrastar el pago con Mercado Pago y su registro/estado/cupos persistidos por el webhook, y comprobar reintento sin doble cupo.
+
+E6 continúa abierta hasta verificar ese circuito. El simulador de notificaciones por sí solo no demuestra un pago aprobado ni debe evitar la validación de firma.
+
+Referencias: https://supabase.com/docs/guides/functions/function-configuration ; https://supabase.com/docs/guides/functions/pricing ; https://www.mercadopago.com.ar/developers/en/docs/checkout-pro-preferences/payment-notifications .
