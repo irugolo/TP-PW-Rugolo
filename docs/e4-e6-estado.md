@@ -53,3 +53,17 @@ Estado consultado por CLI: Preview ACTIVE_HEALTHY, producción INACTIVE. No se r
 E6 continúa abierta hasta verificar ese circuito. El simulador de notificaciones por sí solo no demuestra un pago aprobado ni debe evitar la validación de firma.
 
 Referencias: https://supabase.com/docs/guides/functions/function-configuration ; https://supabase.com/docs/guides/functions/pricing ; https://www.mercadopago.com.ar/developers/en/docs/checkout-pro-preferences/payment-notifications .
+
+## Auditoría antes de pagar y ajuste visual (19/10/2026)
+
+La autora detuvo el checkout al ver una tarjeta personal guardada. No confirmó pago. Se consultaron solo GET de Mercado Pago (`/users/me`, preferencia existente, búsqueda de pagos por external_reference) y lectura de pedidos Preview. La API confirmó vendedor 3762598376, MLA, tag test_user y coincidencia con la configuración local. Pedido 86fe8f07-9195-4664-a584-6ba1a0812af7: cerámica y vino, cantidad 1, ARS 50.000, pendiente. Preferencia 3762598376-416f4fd8-213e-4473-968e-cfa5915c4525: collector coincide, external_reference coincide, importe/cantidad/moneda coinciden, webhook Edge Preview y retornos privados correctos. URL almacenada igual al init_point de API, HTTPS www.mercadopago.com.ar/checkout/v1/redirect y pref_id correcto. Vigente al consultarla, vence 2026-10-19T21:33:52.087Z. Búsqueda de pagos: total 0. No se concluye live_mode=false de un pago inexistente ni se infiere entorno por la apariencia del checkout.
+
+La sesión compradora del navegador NO puede verificarse desde estas APIs. Se pidió únicamente User ID del comprador de prueba para corroborar identidad. La tarjeta personal es compatible con una sesión personal abierta, pero no prueba por sí sola qué entorno usa el vendedor. No se autoriza retomar el pago con esa sesión. Usar sesión privada separada, comprador de prueba y tarjetas oficiales; la web cliente y Mercado Pago tienen cuentas distintas.
+
+Problema concreto corregido: la reutilización de checkout devolvía URL almacenada sin volver a consultar vigencia/preferencia. Ahora se consulta la preferencia y se valida vendedor, referencia, item, cantidad, precio, ARS, callback/webhook y URL, tanto nueva como reutilizada; rechaza vencidas y no crea otra automáticamente. No se cambian estados de pago ni se agregan cobros. La UI verifica vendedor en servidor y configuración antes de habilitar controles; el POST conserva su propia verificación.
+
+Compra integrada al detalle: precio/cantidad/total/botón agrupados, etiqueta demostración, controles y foco accesibles, estilos responsive con tamaños acotados. Resumen en dos columnas que se apilan en móvil. Aviso «reservas no disponibles» eliminado. Sin promesas de «sin dinero real». Estado inicial «Pendiente de pago»; «Estamos verificando tu pago» solo con un pago pending/in_process persistido. Parámetros de retorno ignorados. Compra de una sola experiencia preservada.
+
+Validación local: 34 pruebas JS aprobadas, lint y build Next.js aprobados. Nuevas pruebas de preferencia alterada/ajena/vencida, estados basados en registros, bloqueo visual sin configuración y conservación de cantidad/reintento ante error de red. Revisión visual por navegador no realizada por instrucción de la autora. Manual pendiente: revisar experiencia y resumen a 375 px y escritorio, zoom 200% y recorrido Tab. E6 sigue pendiente del comprador y circuito real de prueba con webhook.
+
+Fuente: https://www.mercadopago.com.ar/developers/es/docs/checkout-pro-preferences/integration-test/test-purchases .

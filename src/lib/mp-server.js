@@ -20,3 +20,10 @@ export async function verifyTestSeller() {
  if(String(seller.id)!==cfg.seller||seller.site_id!=='MLA'||!seller.tags?.includes('test_user'))throw Object.assign(Error('No se confirmó el vendedor de prueba.'),{status:503});
  return cfg;
 }
+
+export async function testCheckoutReady() {
+ try {
+  const cfg=await verifyTestSeller();
+  return Boolean(cfg.secret && cfg.base==='https://tp-pw-rugolo-e4e6-programacion-web.vercel.app');
+ } catch { return false; }
+}
