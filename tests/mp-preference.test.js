@@ -14,5 +14,5 @@ test('order state comes from stored payment, not checkout creation or return que
  assert.equal(orderStatus({estado:'pendiente',checkout_url:'exists',status:'approved'},[]).title,'Pendiente de pago');
  assert.equal(orderStatus({estado:'pendiente'},[{estado:'pending'}]).title,'Estamos verificando tu pago');
  assert.equal(orderStatus({estado:'pendiente'},[{estado:'rejected'}]).title,'Pendiente de pago');
- assert.equal(orderStatus({estado:'pagado'},[]).title,'Pago aprobado');
+ assert.equal(orderStatus({estado:'pagado'},[]).title,'¡Compra exitosa!');
 });

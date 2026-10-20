@@ -14,7 +14,7 @@ export default function TestCheckout({experience,ready=false}){
   <form onSubmit={submit} aria-busy={busy}>
    <div className="compra-seleccion"><div><label htmlFor="cantidad">Cantidad de entradas</label><input id="cantidad" type="number" min="1" max="10" step="1" required value={quantity} disabled={busy||!ready} aria-describedby="cantidad-ayuda" onChange={e=>{setQuantity(e.target.value);key.current=null;}}/><small id="cantidad-ayuda">De 1 a 10 personas</small></div>
    <div className="compra-total"><span>Total estimado</span><strong>{valid?money(Number(quantity)*Number(experience.precio)):'—'}</strong><small>ARS · Importe confirmado al crear el pedido</small></div></div>
-   <button className="boton principal" disabled={busy||!ready||!valid}>{busy?'Creando pedido…':'Ver resumen del pedido'}</button>
+   <button className="boton principal" disabled={busy||!ready||!valid}>{busy?'Preparando reserva…':'Reservar plan'}</button>
    <p className="compra-ayuda">Usá exclusivamente una cuenta compradora y tarjetas de prueba de Mercado Pago.</p>
    {!ready && <p role="alert">Checkout no disponible: falta verificar la configuración de prueba. Intentá más tarde.</p>}
    <p role="status">{message}</p>

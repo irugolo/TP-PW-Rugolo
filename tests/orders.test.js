@@ -6,7 +6,7 @@ test('pedidos demo: RLS, idempotencia, precio servidor y cupos atómicos',async(
  const db=new PGlite();const uid='11111111-1111-4111-8111-111111111111';
  try {
  await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;grant usage on schema auth to authenticated;grant execute on function auth.uid() to authenticated;`);
- for(const file of ['20261001000100_schema.sql','20261001000200_demo.sql','20261012000100_test_orders.sql'])await db.exec(await readFile('supabase/migrations/'+file,'utf8'));
+ for(const file of ['20261001000100_schema.sql','20261001000200_demo.sql','20261012000100_test_orders.sql','20261020000100_verified_test_accounts.sql'])await db.exec(await readFile('supabase/migrations/'+file,'utf8'));
  await db.query('insert into auth.users values($1)',[uid]);await db.exec("update public.cupos_demo set capacidad=1 where experiencia_id='juegos'");
  await db.query("select set_config('request.jwt.claim.sub',$1,false)",[uid]);await db.exec('set role authenticated');
  const key='22222222-2222-4222-8222-222222222222';
@@ -18,6 +18,8 @@ test('pedidos demo: RLS, idempotencia, precio servidor y cupos atómicos',async(
  await db.query("select set_config('request.jwt.claim.sub','44444444-4444-4444-8444-444444444444',false)");assert.equal((await db.query('select * from public.pedidos_demo')).rows.length,0);
  await db.exec('reset role');
  const pay=async(order,id,status,date='2026-10-12T12:00:00Z',amount=18000)=>(await db.query('select public.conciliar_pago_demo($1,$2,$3,$4,$5,$6,$7,false) estado',[order,id,status,date,amount,'ARS','test-seller'])).rows[0].estado;
+ await assert.rejects(db.query("select public.conciliar_pago_demo($1,'blocked','approved',now(),18000,'ARS','3762598376',true,'3762598386',false)",[first.id]));
+ await assert.rejects(db.query("select public.conciliar_pago_demo($1,'blocked','approved',now(),18000,'ARS','other',true,'3762598386',true)",[first.id]));
  assert.equal(await pay(first.id,'pay1','pending'),'pendiente');
  assert.equal(await pay(first.id,'pay1','approved','2026-10-12T12:01:00Z'),'pagado');
  assert.equal(await pay(first.id,'pay1','approved','2026-10-12T12:01:00Z'),'pagado');
@@ -29,5 +31,10 @@ test('pedidos demo: RLS, idempotencia, precio servidor y cupos atómicos',async(
  assert.equal(await pay(first.id,'pay1','refunded','2026-10-12T13:00:00Z'),'reembolsado');
  assert.equal(await pay(first.id,'pay1','refunded','2026-10-12T13:00:00Z'),'reembolsado');
  assert.equal((await db.query("select ocupados from public.cupos_demo where experiencia_id='juegos'")).rows[0].ocupados,0);
+ const reconcileTest=()=>db.query("select public.conciliar_pago_demo($1,'verified-test','approved','2026-10-20T12:00:00Z',18000,'ARS','3762598376',true,'3762598386',true)",[second.id]);
+ await reconcileTest();await reconcileTest();
+ const stored=(await db.query("select live_mode,cuentas_test_verificadas from public.pagos_demo where id='verified-test'")).rows[0];
+ assert.equal(stored.live_mode,true);assert.equal(stored.cuentas_test_verificadas,true);
+ assert.equal((await db.query("select ocupados from public.cupos_demo where experiencia_id='juegos'")).rows[0].ocupados,1);
  } finally {await db.close();}
 });

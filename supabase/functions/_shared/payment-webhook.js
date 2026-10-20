@@ -1,6 +1,9 @@
 // Shared by Next.js and the public Preview Edge Function; no framework dependencies.
 export const PREVIEW_URL = 'https://kulvagylilutnpckpiuw.supabase.co';
 export const WEBHOOK_URL = PREVIEW_URL + '/functions/v1/mercadopago-webhook';
+// Fixed demo pair verified with /users/me and the author's test-account dashboard.
+export const TEST_SELLER = '3762598376';
+export const TEST_BUYER = '3762598386';
 const reply = (status, error) => Response.json(error ? {error} : {received:true}, {status});
 
 export async function verifyPaymentSignature(request, secret) {
@@ -52,14 +55,23 @@ export async function handlePaymentWebhook(request, cfg, fetcher = fetch) {
    return response.json();
   };
   const payment = await call('https://api.mercadopago.com/v1/payments/'+id,{headers:{Authorization:'Bearer '+cfg.token}});
-  if (payment.live_mode !== false || String(payment.collector_id) !== cfg.seller || String(payment.id) !== id || payment.currency_id !== 'ARS') return reply(422,'Pago ajeno al entorno autorizado.');
+  if (typeof payment.live_mode !== 'boolean' || String(payment.collector_id) !== cfg.seller || String(payment.id) !== id || payment.currency_id !== 'ARS') return reply(422,'Pago ajeno al entorno autorizado.');
+  let verifiedTestAccounts = false;
+  if (payment.live_mode) {
+   // Preferences created by a test seller can report live_mode=true. Never accept
+   // this flag alone or rewrite it: verify the fixed test pair and API evidence.
+   if (cfg.seller !== TEST_SELLER || String(payment.payer?.id) !== TEST_BUYER || payment.statement_descriptor !== 'Mercadopago*fake') return reply(422,'Cuentas de prueba no verificadas.');
+   const seller = await call('https://api.mercadopago.com/users/me',{headers:{Authorization:'Bearer '+cfg.token}});
+   verifiedTestAccounts = String(seller.id) === TEST_SELLER && seller.site_id === 'MLA' && seller.tags?.includes('test_user') === true;
+   if (!verifiedTestAccounts) return reply(422,'Vendedor de prueba no verificado.');
+  }
   if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(payment.external_reference || '')) return reply(422,'Referencia inválida.');
   if (!['approved','pending','in_process','rejected','cancelled','refunded'].includes(payment.status) || !Number.isFinite(Date.parse(payment.date_last_updated))) return reply(422,'Estado requiere revisión.');
   const headers = {apikey:cfg.serviceKey,Authorization:'Bearer '+cfg.serviceKey,'Content-Type':'application/json'};
   const orders = await call(cfg.url+'/rest/v1/pedidos_demo?select=id,total&id=eq.'+payment.external_reference,{headers});
   const order = orders[0], amount = Number(payment.transaction_amount);
   if (!order || !Number.isFinite(amount) || amount <= 0 || Math.round(Number(order.total)*100) !== Math.round(amount*100)) return reply(422,'Importe o pedido no coincide.');
-  await call(cfg.url+'/rest/v1/rpc/conciliar_pago_demo',{method:'POST',headers,body:JSON.stringify({p_pedido:order.id,p_id:id,p_estado:payment.status,p_actualizado:payment.date_last_updated,p_importe:payment.transaction_amount,p_moneda:payment.currency_id,p_vendedor:String(payment.collector_id),p_live:payment.live_mode})});
+  await call(cfg.url+'/rest/v1/rpc/conciliar_pago_demo',{method:'POST',headers,body:JSON.stringify({p_pedido:order.id,p_id:id,p_estado:payment.status,p_actualizado:payment.date_last_updated,p_importe:payment.transaction_amount,p_moneda:payment.currency_id,p_vendedor:String(payment.collector_id),p_live:payment.live_mode,p_comprador:verifiedTestAccounts?String(payment.payer.id):null,p_cuentas_test:verifiedTestAccounts})});
   return reply(200); // Only after the idempotent SQL transaction commits; never from redirect data.
  } catch (error) {
   return error.status === 413 ? reply(413,'Notificación demasiado grande.') : reply(503,'No se pudo procesar; reintentar.');

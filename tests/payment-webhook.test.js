@@ -53,3 +53,22 @@ test('API/read/commit errors return retryable sanitized response, never acknowle
   assert.equal(response.status,503);assert.ok(!(await response.text()).includes('sensitive'));
  }
 });
+test('verified test-account checkout preserves live_mode=true and rejects other buyers/sellers',async()=>{
+ const testCfg={...cfg,seller:'3762598376'};
+ const testPayment={...payment,collector_id:3762598376,live_mode:true,payer:{id:'3762598386'},statement_descriptor:'Mercadopago*fake'};
+ for(const [patch,sellerPatch,status] of [[{},{},200],[{payer:{id:'other'}},{},422],[{statement_descriptor:'REAL'},{},422],[{},{tags:[]},422]]){
+  const calls=[];
+  const fetcher=async(url,options)=>{
+   calls.push({url,options});
+   if(url.includes('/v1/payments/'))return Response.json({...testPayment,...patch});
+   if(url.endsWith('/users/me'))return Response.json({id:3762598376,site_id:'MLA',tags:['test_user'],...sellerPatch});
+   if(url.includes('/pedidos_demo?'))return Response.json([{id:orderId,total:100}]);
+   return Response.json('pagado');
+  };
+  const response=await handlePaymentWebhook(request(),testCfg,fetcher);
+  assert.equal(response.status,status);
+  const rpc=calls.find(c=>c.url.includes('/rpc/'));
+  if(status===200){const body=JSON.parse(rpc.options.body);assert.equal(body.p_live,true);assert.equal(body.p_cuentas_test,true);assert.equal(body.p_comprador,'3762598386');}
+  else assert.equal(rpc,undefined);
+ }
+});
