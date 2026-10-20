@@ -36,7 +36,7 @@ def main():
     listing = subprocess.run(['npx','vercel','env','ls','preview',BRANCH], cwd=ROOT, text=True, capture_output=True, timeout=90)
     if listing.returncode:
         raise RuntimeError('Clave guardada en Supabase Preview; falta verificar Vercel. Avisá antes de repetir.')
-    action = 'update' if re.search(r'\bMP_WEBHOOK_SECRET\b',listing.stdout) else 'add'
+    action = 'update' if re.search(r'\bMP_WEBHOOK_SECRET\b',listing.stdout + listing.stderr) else 'add'
     run(['npx','vercel','env',action,'MP_WEBHOOK_SECRET','preview',BRANCH] + (['--yes'] if action == 'update' else []), secret+'\n')
     print('Clave de firma configurada en Supabase Preview y Vercel Preview. Avisame este mensaje para redesplegar y verificar; todavía no hagas la compra.')
 
