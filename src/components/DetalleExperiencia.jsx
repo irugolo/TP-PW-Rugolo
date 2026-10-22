@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { formatearPrecio } from '../data/experiencias';
 
-export default function DetalleExperiencia({ experiencia }) {
+export default function DetalleExperiencia({ experiencia, children }) {
   return (
     <article className="seccion detalle-pagina" aria-labelledby="titulo-detalle">
       <Link href="/experiencias" className="volver">← Volver a experiencias</Link>
@@ -18,8 +18,8 @@ export default function DetalleExperiencia({ experiencia }) {
           </dl>
           <h2>Qué incluye</h2>
           <ul>{experiencia.incluye.map(item => <li key={item}>{item}</li>)}</ul>
-          <p><strong>{formatearPrecio(experiencia.precio)} ARS por persona</strong><br /><small>Precio ilustrativo, sin validez comercial.</small></p>
-          <p className="aviso">Las reservas todavía no están disponibles en esta demostración. Este plan no corresponde a un evento real.</p>
+          {children || <p><strong>{formatearPrecio(experiencia.precio)} ARS por persona</strong><br /><small>Precio ilustrativo, sin validez comercial.</small></p>}
+          <p className="aviso">Experiencia de demostración. Este plan no corresponde a un evento real.</p>
         </div>
       </div>
     </article>

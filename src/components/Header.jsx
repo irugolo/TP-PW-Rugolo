@@ -7,6 +7,7 @@ export default function Header() {
       <nav aria-label="Navegación principal">
         <Link href="/experiencias">Experiencias</Link>
         <Link href="/mi-cuenta">Mi cuenta</Link>
+        {process.env.MP_TEST_MODE === 'true' && <Link href="/pedidos">Mis pedidos</Link>}
         <Link href="/#como-funciona">Cómo funciona</Link>
       </nav>
     </header>
