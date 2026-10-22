@@ -90,3 +90,12 @@ test('Auth 429 no expone email; cambio de contraseña conserva entrada ante erro
  assert.equal(screen.getByLabelText(/Contraseña/).value,'fake-only-password');
  assert.equal(screen.getByRole('button',{name:'Continuar'}).disabled,false);
 });
+
+test('retorno a Auth ya montado cambia login a nueva contraseña',()=>{
+ const {rerender}=render(<AuthForm recovery={false}/>);
+ assert.ok(screen.getByRole('button',{name:'Ingresar'}));
+ rerender(<AuthForm recovery/>);
+ assert.ok(screen.getByRole('heading',{name:'Nueva contraseña'}));
+ assert.equal(screen.queryByLabelText('Email'),null);
+ assert.equal(screen.getByLabelText(/Contraseña/).minLength,12);
+});

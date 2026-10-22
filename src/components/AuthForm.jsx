@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabaseBrowser } from '../lib/supabase/browser';
 export default function AuthForm({ recovery = false }) {
- const [mode, setMode] = useState(recovery ? 'update' : 'login'); const [message,setMessage] = useState(''); const [busy,setBusy] = useState(false); const lock = useRef(false); const router = useRouter();
+ const [selectedMode, setMode] = useState('login'); const mode = recovery ? 'update' : selectedMode; const [message,setMessage] = useState(''); const [busy,setBusy] = useState(false); const lock = useRef(false); const router = useRouter();
  async function submit(event) {
   event.preventDefault(); if (!event.currentTarget.reportValidity()) return; if (lock.current) return; lock.current = true; setBusy(true); setMessage('Procesando…');
   const form = new FormData(event.currentTarget); const email = String(form.get('email') || '').trim(); const password = String(form.get('password') || '');
