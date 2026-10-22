@@ -5,7 +5,7 @@ import { supabaseBrowser } from '../lib/supabase/browser';
 export default function AuthForm({ recovery = false }) {
  const [mode, setMode] = useState(recovery ? 'update' : 'login'); const [message,setMessage] = useState(''); const [busy,setBusy] = useState(false); const lock = useRef(false); const router = useRouter();
  async function submit(event) {
-  event.preventDefault(); if (lock.current) return; lock.current = true; setBusy(true); setMessage('Procesando…');
+  event.preventDefault(); if (!event.currentTarget.reportValidity()) return; if (lock.current) return; lock.current = true; setBusy(true); setMessage('Procesando…');
   const form = new FormData(event.currentTarget); const email = String(form.get('email') || '').trim(); const password = String(form.get('password') || '');
   try {
    const db = supabaseBrowser(); const redirectTo = `${window.location.origin}/auth/callback`;
@@ -14,6 +14,7 @@ export default function AuthForm({ recovery = false }) {
    if (mode === 'register') result = await db.auth.signUp({email,password,options:{emailRedirectTo:redirectTo}});
    if (mode === 'reset') result = await db.auth.resetPasswordForEmail(email,{redirectTo:`${redirectTo}?next=recovery`});
    if (mode === 'update') result = await db.auth.updateUser({password});
+   if (result.error?.status === 429) { setMessage('Demasiados intentos. Esperá unos minutos antes de volver a intentar.'); return; }
    if (result.error) { setMessage(mode === 'login' ? 'No pudimos iniciar sesión. Revisá tus datos y la confirmación de correo.' : 'No se pudo completar. Revisá los datos o solicitá un enlace nuevo.'); return; }
    if (mode === 'login' || mode === 'update') { router.replace('/mi-cuenta'); router.refresh(); }
    else setMessage('Si corresponde, recibirás un correo con los pasos para continuar. Revisá tu bandeja de entrada.');
@@ -29,5 +30,5 @@ export default function AuthForm({ recovery = false }) {
 }
 export function SignOut() {
  const [message,setMessage] = useState(''); const [busy,setBusy] = useState(false); const router = useRouter();
- return <><button disabled={busy} onClick={async () => {setBusy(true); try {const {error} = await supabaseBrowser().auth.signOut();if(error) throw error; router.replace('/auth');router.refresh();} catch {setMessage('No se pudo cerrar sesión. Intentá nuevamente.');} finally {setBusy(false);}}}>Cerrar sesión</button><p role="status">{message}</p></>;
+ return <><button disabled={busy} onClick={async () => {setBusy(true); try {const {error} = await supabaseBrowser().auth.signOut({ scope: 'local' });if(error) throw error; router.replace('/auth');router.refresh();} catch {setMessage('No se pudo cerrar sesión. Intentá nuevamente.');} finally {setBusy(false);}}}>Cerrar sesión</button><p role="status">{message}</p></>;
 }

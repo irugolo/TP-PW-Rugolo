@@ -34,3 +34,8 @@ test('fallos inesperados no filtran detalles internos',async () => {
  const response = failure(new Error('secreto interno'));
  assert.equal(response.status,500); assert.ok(!(await response.text()).includes('secreto'));
 });
+test('JSON con MIME engañoso y cuerpos multibyte se rechazan',async()=>{
+ const origin=process.env.APP_ORIGIN||'http://localhost:3000';
+ assert.throws(()=>checkOrigin(new Request(origin,{headers:{origin,'content-type':'application/json-malicious'}})),e=>e.status===415);
+ await assert.rejects(payload(new Request(origin,{method:'POST',body:'á'.repeat(11000)}),profileSchema),e=>e.status===413);
+});

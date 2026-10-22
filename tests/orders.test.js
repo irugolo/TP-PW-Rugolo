@@ -6,13 +6,16 @@ test('pedidos demo: RLS, idempotencia, precio servidor y cupos atómicos',async(
  const db=new PGlite();const uid='11111111-1111-4111-8111-111111111111';
  try {
  await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;grant usage on schema auth to authenticated;grant execute on function auth.uid() to authenticated;`);
- for(const file of ['20261001000100_schema.sql','20261001000200_demo.sql','20261012000100_test_orders.sql','20261020000100_verified_test_accounts.sql'])await db.exec(await readFile('supabase/migrations/'+file,'utf8'));
+ for(const file of ['20261001000100_schema.sql','20261001000200_demo.sql','20261012000100_test_orders.sql','20261020000100_verified_test_accounts.sql','20261021000100_order_creation_limit.sql'])await db.exec(await readFile('supabase/migrations/'+file,'utf8'));
  await db.query('insert into auth.users values($1)',[uid]);await db.exec("update public.cupos_demo set capacidad=1 where experiencia_id='juegos'");
  await db.query("select set_config('request.jwt.claim.sub',$1,false)",[uid]);await db.exec('set role authenticated');
  const key='22222222-2222-4222-8222-222222222222';
  const create=async(k=key)=> (await db.query("select (public.crear_pedido_demo('juegos',1,$1)).*",[k])).rows[0];
  const first=await create();assert.equal((await create()).id,first.id);assert.equal(Number(first.total),18000);
  await assert.rejects(db.query("update public.pedidos_demo set estado='pagado'"));
+ await assert.rejects(db.query("update public.cupos_demo set ocupados=0"));
+ await assert.rejects(db.query("update public.pagos_demo set estado='approved'"));
+ await assert.rejects(db.query("select public.conciliar_pago_demo($1,'forged','approved',now(),18000,'ARS','fake',false)",[first.id]));
  await assert.rejects(db.query("select public.crear_pedido_demo('juegos',-1,$1)",[key]));
  const second=await create('33333333-3333-4333-8333-333333333333');
  await db.query("select set_config('request.jwt.claim.sub','44444444-4444-4444-8444-444444444444',false)");assert.equal((await db.query('select * from public.pedidos_demo')).rows.length,0);
@@ -36,5 +39,11 @@ test('pedidos demo: RLS, idempotencia, precio servidor y cupos atómicos',async(
  const stored=(await db.query("select live_mode,cuentas_test_verificadas from public.pagos_demo where id='verified-test'")).rows[0];
  assert.equal(stored.live_mode,true);assert.equal(stored.cuentas_test_verificadas,true);
  assert.equal((await db.query("select ocupados from public.cupos_demo where experiencia_id='juegos'")).rows[0].ocupados,1);
+ await db.exec('set role authenticated');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[uid]);
+ // Use another published experience; paid bookings above have no capacity left.
+ for(let i=0;i<8;i++)await db.query("select public.crear_pedido_demo('cocina',1,gen_random_uuid())");
+ await assert.rejects(db.query("select public.crear_pedido_demo('cocina',1,gen_random_uuid())"),e=>e.code==='PT429');
+ assert.equal((await create()).id,first.id); // retries do not consume quota
+ await db.exec('reset role');
  } finally {await db.close();}
 });

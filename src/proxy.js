@@ -1,10 +1,10 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
-import { config as credentials, configured } from './lib/supabase/config';
+import { config as credentials, configured, sessionCookieOptions } from './lib/supabase/config';
 export async function proxy(request) {
  let response = NextResponse.next({ request });
  if (!configured()) return response;
- const supabase = createServerClient(...credentials(), { cookies: {
+ const supabase = createServerClient(...credentials(), { cookieOptions: sessionCookieOptions(), cookies: {
   getAll: () => request.cookies.getAll(),
   setAll(items) {
    items.forEach(({ name, value }) => request.cookies.set(name, value));

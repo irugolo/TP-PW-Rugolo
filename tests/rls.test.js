@@ -53,5 +53,7 @@ test('migraciones, restricciones y permisos RLS en PostgreSQL aislado',async t =
   await db.exec("delete from public.experiencias where id='test-admin'");
   assert.equal((await db.query("select * from public.experiencias where id='test-admin'")).rows.length,0);
  }));
+ await db.query("update public.perfiles set rol='cliente' where id=$1",[admin]);
+ await as('authenticated',admin,async()=>{await assert.rejects(db.query('select public.admin_metrics()'));});
  await db.close();
 });
