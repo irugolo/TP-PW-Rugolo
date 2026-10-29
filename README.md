@@ -6,11 +6,11 @@ Proyecto académico con Next.js App Router, React y Supabase. Catálogo, cuentas
 
 **PR sin fusionar:** https://github.com/irugolo/TP-PW-Rugolo/pull/5
 
-Preview y producción usan bases separadas. Esta etapa solo modifica Preview; no habilita pagos reales, no publica producción ni contrata recursos. El webhook de Preview es público y exige firma; la web mantiene Deployment Protection.
+Preview y producción usan bases separadas. Esta etapa modifica código y Preview; no habilita pagos reales, no publica producción ni contrata recursos. El webhook de Preview es público y exige firma; la web mantiene Deployment Protection.
 
 ## Desarrollo y pruebas
 
-Node >=22.12; CI utiliza `.nvmrc`. Las versiones instaladas están fijadas por `package-lock.json`.
+Node >=24 (CI y Vercel: 24.x); CI utiliza `.nvmrc`. Las versiones instaladas están fijadas por `package-lock.json`.
 
 ```sh
 npm ci
@@ -66,10 +66,31 @@ Los pedidos guardan el nombre, descripción, precio y cantidad utilizados en la 
 
 ## Evidencia y límites
 
-- [E3: pruebas previas de formularios, CRUD y sesiones](docs/e3-verificacion.md). La autora confirmó registro, correo, recuperación, ingreso con nueva contraseña y permisos cliente/admin. El asistente interactivo probó sesiones normales contra servidor local y Supabase Preview; no implica cobertura nueva de todas las rutas en Vercel.
+- [E3: pruebas previas de formularios, CRUD y sesiones](docs/e3-verificacion.md). La autora confirmó registro, correo, ingreso y permisos cliente/admin. El 29/10 volvió a confirmar recuperación: formulario Nueva contraseña y login posterior correcto. El asistente interactivo probó sesiones normales contra servidor local y Supabase Preview; no implica cobertura nueva de todas las rutas en Vercel.
 - [E4/E6: historial de implementación](docs/e4-e6-estado.md). Compra nueva de Cocina en equipo por ARS35.000, pago `185404201114`, webhook automático 200, pedido pagado y un cupo asignado. [Evidencia en PR](https://github.com/irugolo/TP-PW-Rugolo/pull/5#issuecomment-6325400430).
 - Los tests de HTTP usan identidades/proveedores simulados; PGlite ejecuta PostgreSQL con `auth.uid()` emulado. No equivalen a sesiones reales, concurrencia remota ni pagos externos en todos los escenarios.
-- Pendientes: concurrencia con múltiples conexiones, escenarios excepcionales E6, reembolsos parciales/contracargos y resolución automática de preferencias inciertas. No se declara seguridad absoluta ni pruebas exhaustivas.
+- Concurrencia remota verificada con fixtures: último cupo y duplicados simultáneos, sin sobreasignación; limpieza completa. Pendientes: aprobación sin retorno observada manualmente, excepciones MP completas y revisión manual de accesibilidad actual. Reembolsos parciales/contracargos y preferencias inciertas requieren revisión operativa; no se declara seguridad absoluta.
 - Controles manuales de esta etapa: [checklist breve](docs/clase09-seguridad.md#controles-manuales-pendientes). La nueva captura de compra confirma escritorio, no móvil/zoom/teclado.
 
 Para pruebas autenticadas locales sin compartir credenciales: iniciar `npm run dev` y ejecutar `python3 scripts/verify-interactive.py` en otra terminal. Pide credenciales ocultas, mantiene tokens en memoria, modifica/restaura un perfil y crea/elimina una experiencia temporal. No repetir sin necesidad; esta auditoría no requiere nuevas compras ni correos.
+
+## Auditoría de rúbrica y defensa (29/10/2026)
+
+- [Matriz E1–E6 y cinco criterios](docs/rubrica.md): aceptación, evidencia y pendientes.
+- [Pruebas, bugs reales y checklist manual](docs/pruebas.md): distingue mocks, navegador aislado, SQL real y compra MP histórica.
+- [Entornos, logs, CI/CD y publicación/reversión](docs/operacion.md): producción está pausada; publicación requiere aprobación.
+- [Recorrido y preguntas de defensa](docs/defensa.md).
+
+CI ejecuta Chromium headless con backend ficticio sin secretos:
+
+```sh
+npm run build:e2e
+npx playwright install chromium
+npm run test:e2e
+```
+
+Ese build usa datos/configuración ficticios: nunca desplegarlo como producción. Vercel construye con sus propias variables mediante integración Git; lint y pruebas preceden al build. main exige el check de CI. No subir trazas/capturas con sesiones a este repositorio público. Pruebas reales aisladas de Auth/CRUD y concurrencia tienen comandos/precondiciones en la documentación; crean y eliminan únicamente fixtures.
+
+Modelo: `auth.users` 1:1 `perfiles`; usuarios 1:N `pedidos_demo`; experiencias 1:N pedidos y 1:1 `cupos_demo`; pedidos 1:N `pagos_demo`. IDs/foreign keys, cantidades y montos controlados; snapshot del pedido conserva condiciones de compra. No borrar experiencias con pedidos: despublicarlas.
+
+La habilitación preparada para la demo pública es explícita (`MP_DEMO_PRODUCTION_ENABLED`), usa exclusivamente base Production y pagos test; actualmente no está activada. No se copian usuarios entre bases. El proyecto sigue pendiente de publicación final y no puede considerarse disponible públicamente mientras Supabase Production esté pausada.

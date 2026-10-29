@@ -72,3 +72,11 @@ test('verified test-account checkout preserves live_mode=true and rejects other 
   else assert.equal(rpc,undefined);
  }
 });
+test('correlation is returned without leaking payload or provider failure',async()=>{
+ const {fetcher}=upstream({},1);
+ const response=await handlePaymentWebhook(request(),cfg,fetcher);
+ assert.match(response.headers.get('x-correlation-id'),/^[a-f0-9-]{36}$/);
+ assert.equal(response.status,503);
+ const text=await response.text();
+ for(const value of [cfg.token,cfg.secret,cfg.serviceKey,orderId,'sensitive'])assert.equal(text.includes(value),false);
+});

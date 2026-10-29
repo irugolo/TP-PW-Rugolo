@@ -4,7 +4,7 @@ import {verifiedPreferenceUrl} from '../src/lib/mp-preference.js';
 import {orderStatus} from '../src/lib/order-status.js';
 import {WEBHOOK_URL} from '../supabase/functions/_shared/payment-webhook.js';
 const order={id:'order-fixture',experiencia_id:'ceramica-y-vino',cantidad:1,precio:50000};
-const cfg={seller:'123',base:'https://preview.example.com'};
+const cfg={seller:'123',base:'https://preview.example.com',webhook:WEBHOOK_URL};
 const preference={id:'123-fixture',collector_id:123,external_reference:order.id,items:[{id:order.experiencia_id,quantity:1,unit_price:50000,currency_id:'ARS'}],notification_url:WEBHOOK_URL,back_urls:Object.fromEntries(['success','pending','failure'].map(k=>[k,cfg.base+'/pedidos/'+order.id])),expires:true,expiration_date_to:'2030-01-01T00:00:00Z',init_point:'https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=123-fixture'};
 test('checkout: accepts only matching preference and rejects expired, foreign, altered or wrong URLs',()=>{
  assert.equal(verifiedPreferenceUrl(preference,order,cfg,0),preference.init_point);

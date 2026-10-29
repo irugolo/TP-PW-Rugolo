@@ -23,4 +23,7 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: python3 -m unittest discover -s tests -p 'test_*.py'
-      - run: npm run build
+      - run: npm run build:e2e
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      # No artifacts uploaded: public repository, traces may carry session data.

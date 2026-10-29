@@ -1,10 +1,12 @@
 import 'server-only';
+import {checkoutEnvironment} from '../../supabase/functions/_shared/demo-environment.js';
 import {createClient} from '@supabase/supabase-js';
 export function paymentConfig() {
  const env=process.env;
- if(env.MP_TEST_MODE!=='true'||env.NEXT_PUBLIC_SUPABASE_URL!=='https://kulvagylilutnpckpiuw.supabase.co'||env.VERCEL_ENV==='production')throw Object.assign(Error('Los pagos de prueba no están disponibles.'),{status:503});
+ const target=checkoutEnvironment(env);
+ if(!target)throw Object.assign(Error('Los pagos de prueba no están disponibles.'),{status:503});
  if(!env.MP_TEST_ACCESS_TOKEN||!env.MP_TEST_SELLER_ID||!env.SUPABASE_SERVICE_ROLE_KEY)throw Object.assign(Error('Falta configurar pagos de prueba.'),{status:503});
- return {token:env.MP_TEST_ACCESS_TOKEN,seller:env.MP_TEST_SELLER_ID,secret:env.MP_WEBHOOK_SECRET,base:env.MP_BASE_URL};
+ return {token:env.MP_TEST_ACCESS_TOKEN,seller:env.MP_TEST_SELLER_ID,secret:env.MP_WEBHOOK_SECRET,...target};
 }
 export function paymentDatabase() {
  paymentConfig();return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL,process.env.SUPABASE_SERVICE_ROLE_KEY,{auth:{persistSession:false,autoRefreshToken:false},global:{fetch:(input,options)=>fetch(input,{...options,signal:AbortSignal.timeout(8000)})}});
@@ -24,6 +26,6 @@ export async function verifyTestSeller() {
 export async function testCheckoutReady() {
  try {
   const cfg=await verifyTestSeller();
-  return Boolean(cfg.secret && cfg.base==='https://tp-pw-rugolo-e4e6-programacion-web.vercel.app');
+  return Boolean(cfg.secret);
  } catch { return false; }
 }

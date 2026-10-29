@@ -1,5 +1,6 @@
 // Shared by Next.js and the public Preview Edge Function; no framework dependencies.
-export const PREVIEW_URL = 'https://kulvagylilutnpckpiuw.supabase.co';
+import {PREVIEW_URL,demoEnvironment} from './demo-environment.js';
+export {PREVIEW_URL};
 export const WEBHOOK_URL = PREVIEW_URL + '/functions/v1/mercadopago-webhook';
 // Fixed demo pair verified with /users/me and the author's test-account dashboard.
 export const TEST_SELLER = '3762598376';
@@ -38,11 +39,11 @@ async function readEvent(request) {
  try { return JSON.parse(new TextDecoder().decode(bytes)); } catch { return null; }
 }
 
-export async function handlePaymentWebhook(request, cfg, fetcher = fetch) {
+async function processPaymentWebhook(request, cfg, fetcher = fetch) {
  if (request.method !== 'POST') return reply(405, 'Método no permitido.');
  try {
   // Fail closed even if accidentally deployed to another project or with live settings.
-  if (cfg.url !== PREVIEW_URL || cfg.mode !== 'true' || !cfg.token || !/^\d+$/.test(cfg.seller || '') || !cfg.serviceKey || !cfg.secret) return reply(503,'Webhook sin configurar.');
+  if (!demoEnvironment(cfg.url,cfg.productionEnabled) || cfg.mode !== 'true' || !cfg.token || !/^\d+$/.test(cfg.seller || '') || !cfg.serviceKey || !cfg.secret) return reply(503,'Webhook sin configurar.');
   const id = await verifyPaymentSignature(request,cfg.secret);
   if (!id) return reply(401,'Firma inválida.');
   const event = await readEvent(request);
@@ -76,4 +77,13 @@ export async function handlePaymentWebhook(request, cfg, fetcher = fetch) {
  } catch (error) {
   return error.status === 413 ? reply(413,'Notificación demasiado grande.') : reply(503,'No se pudo procesar; reintentar.');
  }
+}
+
+// Safe operational correlation: never log payloads, emails, tokens or provider errors.
+export async function handlePaymentWebhook(request, cfg, fetcher = fetch) {
+ const correlation = crypto.randomUUID(); const started = Date.now();
+ const response = await processPaymentWebhook(request, cfg, fetcher);
+ response.headers.set('x-correlation-id', correlation);
+ console.info(JSON.stringify({component:'payment-webhook',correlation,status:response.status,duration_ms:Date.now()-started}));
+ return response;
 }

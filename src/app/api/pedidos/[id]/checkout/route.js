@@ -1,5 +1,4 @@
 import {verifiedPreferenceUrl} from '../../../../../lib/mp-preference';
-import {WEBHOOK_URL} from '../../../../../../supabase/functions/_shared/payment-webhook.js';
 import {z} from 'zod';
 import {identity} from '../../../../../lib/access';
 import {checkOrigin,failure} from '../../../../../lib/http';
@@ -10,7 +9,6 @@ export async function POST(request,{params}) {
   checkOrigin(request);const {id}=await params;if(!z.uuid().safeParse(id).success)return Response.json({error:'Pedido inválido.'},{status:400});
   const {db,user}=await identity();const cfg=await verifyTestSeller();
   if(!cfg.secret)return Response.json({error:'Falta terminar la configuración del webhook de prueba.'},{status:503});
-  const base=new URL(cfg.base);if(base.protocol!=='https:'||base.origin!==cfg.base||base.hostname==='tp-pw-rugolo.vercel.app')throw Error('Invalid preview origin');
   const {data:order,error}=await db.from('pedidos_demo').select('*').eq('id',id).eq('propietario',user.id).maybeSingle();
   if(error)throw error;if(!order)return Response.json({error:'Pedido no encontrado.'},{status:404});
   if(order.estado==='pagado'||order.estado==='reembolsado'||order.estado==='revision')return Response.json({error:'Este pedido no admite otro checkout.'},{status:409});
@@ -26,7 +24,7 @@ export async function POST(request,{params}) {
   const lock=await service.from('pedidos_demo').update({preferencia_estado:'creando'}).eq('id',id).eq('preferencia_estado','nueva').select('id').maybeSingle();
   if(lock.error)throw lock.error;if(!lock.data)return Response.json({error:'La preferencia está en proceso o requiere revisión. No se creará un cobro duplicado.'},{status:409});
   claimed=id;
-  const preference=await mpRequest('/checkout/preferences',{method:'POST',body:{items:[{id:order.experiencia_id,title:order.nombre,description:order.descripcion,quantity:order.cantidad,unit_price:Number(order.precio),currency_id:'ARS'}],external_reference:id,back_urls:{success:cfg.base+'/pedidos/'+id,pending:cfg.base+'/pedidos/'+id,failure:cfg.base+'/pedidos/'+id},notification_url:WEBHOOK_URL,auto_return:'approved',expires:true,expiration_date_to:new Date(Date.now()+30*60000).toISOString()}});
+  const preference=await mpRequest('/checkout/preferences',{method:'POST',body:{items:[{id:order.experiencia_id,title:order.nombre,description:order.descripcion,quantity:order.cantidad,unit_price:Number(order.precio),currency_id:'ARS'}],external_reference:id,back_urls:{success:cfg.base+'/pedidos/'+id,pending:cfg.base+'/pedidos/'+id,failure:cfg.base+'/pedidos/'+id},notification_url:cfg.webhook,auto_return:'approved',expires:true,expiration_date_to:new Date(Date.now()+30*60000).toISOString()}});
   const checkout=verifiedPreferenceUrl(preference,order,cfg);
   const saved=await service.from('pedidos_demo').update({preferencia_id:String(preference.id),checkout_url:checkout,preferencia_estado:'lista'}).eq('id',id);
   if(saved.error)throw saved.error;return Response.json({url:checkout});

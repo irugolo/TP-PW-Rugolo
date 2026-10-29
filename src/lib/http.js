@@ -22,7 +22,12 @@ export async function payload(request, schema) {
  if (!parsed.success) throw Object.assign(new Error('Revisá los campos indicados.'), { status: 422, fields: fieldErrors(parsed.error) });
  return parsed.data;
 }
-export function failure(error) { return Response.json({ error: error.status ? error.message : 'No se pudo completar la operación. Intentá nuevamente.', fields: error.fields }, { status: error.status || 500, headers: {'Cache-Control':'private, no-store'} }); }
+export function failure(error) {
+ const correlation=crypto.randomUUID(), status=error.status || 500;
+ // No error.message, stack, request body or identity in operational logs.
+ console.info(JSON.stringify({component:'api',correlation,status}));
+ return Response.json({error:error.status ? error.message : 'No se pudo completar la operación. Intentá nuevamente.',fields:error.fields},{status,headers:{'Cache-Control':'private, no-store','x-correlation-id':correlation}});
+}
 export function databaseError(error) {
  if (!error) return;
  const messages = { '23505': 'Ya existe una experiencia con ese identificador.', '23503': 'Hay datos relacionados. No se puede eliminar.', '42501': 'No tenés permiso para esta operación.' };
