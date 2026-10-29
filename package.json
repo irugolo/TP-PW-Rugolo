@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --import tsx --experimental-test-module-mocks --test tests/*.test.js tests/ui/*.test.jsx",
+    "test": "NODE_ENV=test node --import tsx --experimental-test-module-mocks --test tests/*.test.js tests/ui/*.test.jsx",
     "test:e2e": "playwright test",
     "build:e2e": "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54329 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=fixture-public-key npm run build"
   },

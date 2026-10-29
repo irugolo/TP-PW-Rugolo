@@ -41,6 +41,17 @@ npm run test:e2e
 | B03 dependencias vulnerables | Alta (aviso crítico en Next) / alta | `npm audit` señaló Next16.3.6, Zod4.6.5 y undici transitivo | Next/eslint-config-next16.4.2, Zod4.6.7, lock actualizado sin audit force. Auditoría posterior0 hallazgos conocidos; no equivale a ausencia de vulnerabilidades. |
 | B04 falta de bloqueo main | Alta / alta | API GitHub mostró main sin protección; check fallido no era requisito de integración | Se activó check estricto y enforce_admins, prohibiendo force/delete. Ejercicio controlado del pipeline registrado aparte; no es un bug ficticio de producto. |
 
+### B05 — Entorno de tests en Vercel
+
+Severidad media/prioridad alta (bloquea build). El ejercicio `1fb8918` expuso17fallos React adicionales a la prueba intencional: `React.act is not a function`. Vercel heredaba NODE_ENV=production; Testing Library necesita React de pruebas/desarrollo. Se fija `NODE_ENV=test` únicamente en `npm test`; Next build conserva production. Regresión: ejecutar npm test con NODE_ENV=production heredado y verificar que solo falla el probe deliberado; luego retirarlo y comprobar Vercel Ready. No se eliminan pruebas para conseguir verde.
+
+## Ejercicio controlado de gates
+
+- Commit `1fb8918e07e52d3d7f6f128c4b723485f8f22423`: prueba temporal explícitamente fallida, no bug de producto inventado.
+- [Actions40965331163](https://github.com/irugolo/TP-PW-Rugolo/actions/runs/40965331163):48pass/1fail intencional; check obligatorio FAILURE y PR OPEN/BLOCKED por API. No se intentó fusionar.
+- [Deployment fallido](https://vercel.com/programacion-web/tp-pw-rugolo/ESNocYL5tBeqmbYHfi9DukGe1w11): Error, comando lint/test/build sale1; Next build no publica. También detectó B05 real (no atribuir todos los fallos al probe).
+- Se retira solamente `tests/ci-gate-probe.test.js` tras registrar evidencia, sin alterar el historial ni saltar tests. Recuperación remota a verde pendiente del siguiente commit.
+
 ## Laboratorio antes/después de B02
 
 Un muestreo, misma máquina, sin throttling; caché y red Supabase influyen. CLS aquí es suma de entradas sin interacción durante la carga, no estadística de campo por ventanas de sesión.
