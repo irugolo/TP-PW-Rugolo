@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { experienceSchema, profileSchema, fieldErrors } from '../lib/validation';
 const labels = { id: 'Identificador URL', nombre: 'Nombre', telefono: 'Teléfono (opcional)', categoria: 'Categoría', descripcion: 'Descripción breve', detalle: 'Detalle', zona: 'Zona', duracion: 'Duración', precio: 'Precio en ARS', filtros: 'Compañía', imagen: 'Imagen', alt: 'Descripción de la imagen', incluye: 'Qué incluye (un elemento por línea)', estado: 'Estado' };
 const limits = { id:60, nombre:120, telefono:30, categoria:100, descripcion:400, detalle:4000, zona:120, duracion:80, alt:240, incluye:2411 };
-const options = { imagen: ['juegos','cocina','pintura','picnic','trivia','sabores'], estado:['borrador','publicado'] };
+const options = { imagen: ['juegos','cocina','pintura','picnic','trivia','sabores','ceramica'], estado:['borrador','publicado'] };
 export const emptyExperience = { id:'',nombre:'',categoria:'',descripcion:'',detalle:'',zona:'',duracion:'',precio:0,filtros:[],imagen:'juegos',alt:'',incluye:[],estado:'borrador' };
 export default function DataForm({ initial, profile = false, onSaved }) {
  const keys = profile ? ['nombre','telefono'] : Object.keys(emptyExperience);

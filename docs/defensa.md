@@ -32,11 +32,11 @@ No memorizar una promesa de seguridad o una nota: mostrar comportamiento y expli
 
 **¿Cómo se protegen secretos y logs?** Variables privadas de servidor, `.env` ignorados, temporales privados borrados, respuesta sanitizada. Logs solo estado/correlación, no payload/token/email. Traces de Playwright pueden contener secretos; no se suben al repo público.
 
-**¿CI verde garantiza que anda todo?** No. Cubre lo automatizado en ese SHA. Hay fixtures/mocks, sesiones reales contra Preview y evidencia MP por separado. Recuperación por correo se confirmó manualmente29/10. VoiceOver/zoom y escenarios MP que no se ejecutaron siguen pendientes.
+**¿CI verde garantiza que anda todo?** No. Cubre lo automatizado en ese SHA. Hay fixtures/mocks, sesiones reales contra Preview y evidencia MP por separado. Recuperación por correo se confirmó manualmente el 29/10. VoiceOver/zoom y escenarios MP que no se ejecutaron siguen pendientes.
 
 **¿Cómo se bloquea código roto?** main exige CI estricta incluso a admins; build Vercel corre lint/test antes de Next. No alcanza con ver dos checks independientes. El ejercicio de fallo registra su SHA y resultado; admins todavía podrían cambiar reglas o usar CLI, límite que se documenta.
 
-**¿Qué significa el rendimiento medido?** Es laboratorio local Chromium, no usuarios reales. Se corrigió un CLS0.226 causado por footer visible en loading; después0 en las cargas medidas. Las métricas actuales son LCP, INP y CLS; no se reemplaza INP por FID ni se afirma un percentil75 sin muestra.
+**¿Qué significa el rendimiento medido?** Es laboratorio local Chromium, no usuarios reales. Se corrigió un CLS0.226 causado por footer visible en loading; después0 en las cargas medidas. Las métricas actuales son LCP, INP y CLS; no se reemplaza INP por FID ni se afirma un percentil 75 sin muestra.
 
 **¿Por qué Preview privada y webhook público?** MP necesita alcanzar el endpoint sin iniciar sesión Vercel. Solo se expone la función que autentica con firma; web privada se mantiene. Publicación final usará base separada y dominio existente, únicamente con aprobación.
 

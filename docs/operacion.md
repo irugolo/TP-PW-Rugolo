@@ -14,7 +14,7 @@ Variables públicas: NEXT_PUBLIC_SUPABASE_URL/PUBLISHABLE_KEY. Server: APP_ORIGI
 
 ## CI/CD y límites
 
-GitHub Actions en PR/main: npm ci → lint → pruebas JS/Python → build con fixtures → Chromium E2E. Node24 coincide con versión mayor Vercel observada. Proyecto Vercel aún muestra preset histórico Vite; `vercel.json` declara explícitamente Next.js/build/install y tiene precedencia, no es necesario cambiar la configuración de producción para resolverlo.
+GitHub Actions en PR/main: npm ci → lint → pruebas JS/Python → build con fixtures → Chromium E2E. Node 24 coincide con versión mayor Vercel observada. Proyecto Vercel aún muestra preset histórico Vite; `vercel.json` declara explícitamente Next.js/build/install y tiene precedencia, no es necesario cambiar la configuración de producción para resolverlo.
 
 main exige “Instalar y compilar Next.js”, rama actualizada (strict), aplica a admins, forcepush/delete prohibidos. Vercel ejecuta lint/test antes del build, por lo que un fallo no crea deployment Ready. La CI ampliada es obligatoria para integrar en main y disparar su publicación Git. No hay un segundo workflow de deploy ni despliegues manuales duplicados.
 
@@ -35,7 +35,7 @@ Destino concreto: main → proyecto Vercel existente → `https://tp-pw-rugolo.v
 Después de **una aprobación explícita** para publicar:
 
 1. Restaurar **proyecto Production existente** por mecanismo oficial; consultar estado hasta ACTIVE_HEALTHY. Si Free no permite restaurar, detenerse sin contratar ni crear reemplazo. No tareas artificiales de actividad.
-2. Obtener respaldo privado de tablas/datos existentes y listado de migraciones; permisos0600, fuera del repo. No `db reset`. Revisar diferencia: producción E3 frente a migraciones `20261012000100`, `20261020000100`, `20261021000100`. Aplicar solo pendientes, abortar ante divergencia. Su estado real no puede confirmarse mientras está pausada.
+2. Obtener respaldo privado de tablas/datos existentes y listado de migraciones; permisos0600, fuera del repo. No `db reset`. Revisar diferencia: producción E3 frente a migraciones `20261012000100`, `20261020000100`, `20261021000100` y `20261029000100` (opción de imagen/corrección condicionada). Aplicar solo pendientes, abortar ante divergencia. Su estado real no puede confirmarse mientras está pausada.
 3. Configurar variables de Production con su URL/publishable/service key, APP_ORIGIN/MP_BASE_URL del dominio final, mismas cuentas MP **test**, secreto de app correcto; habilitación explícita de demo. No copiar usuarios ni DB desde Preview.
 4. Desplegar Edge firmado en `https://lvkglhdckvnkixglyvms.supabase.co/functions/v1/mercadopago-webhook`, modo demo explícito. Solo esa función sin JWT; HMAC sigue obligatorio. Preferencias nuevas usan ese destino; preferencias Preview conservan el suyo. Comprobar configuración MP para notificaciones de esa app sin borrar URL Preview si todavía se usa.
 5. Revisar SMTP/callbacks de Production y cuenta admin ya existente sin resetear contraseña. El registro/confirmación de Production es independiente de Preview.

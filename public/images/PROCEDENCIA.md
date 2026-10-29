@@ -16,3 +16,11 @@ con CSS; los archivos locales tienen compresión y tamaño reducido.
 | picnic.jpg | https://www.pexels.com/photo/friends-having-picnic-on-the-beach-10495659/ |
 | trivia.jpg (foto ilustrativa de reunión social) | https://www.pexels.com/photo/happy-friends-hanging-out-together-and-eating-pizza-7886597/ |
 | sabores.jpg | https://www.pexels.com/photo/friends-sitting-at-the-table-6427708/ |
+
+Añadida el 29/10/2026, misma licencia gratuita y uso ilustrativo:
+
+| Archivo | Autor y página de procedencia |
+| --- | --- |
+| ceramica.jpg | Roman Odintsov — https://www.pexels.com/photo/hands-making-clay-bowl-8063870/ |
+
+Descarga de Pexels comprimida a 1200px; no representa al proveedor de un evento real.

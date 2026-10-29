@@ -6,7 +6,7 @@ export const experienceSchema = z.object({
  nombre: text(120), categoria: text(100), descripcion: text(400), detalle: text(4000), zona: text(120), duracion: text(80),
  precio: z.number({error: 'Ingresá un precio numérico.'}).finite('Ingresá un precio finito.').min(0, 'El precio no puede ser negativo.').max(10000000, 'El precio máximo es 10000000 ARS.').multipleOf(0.01, 'Usá como máximo dos decimales.'),
  filtros: z.array(z.enum(['Con amigos', 'En pareja', 'Conocer gente'])).min(1, 'Elegí al menos una opción.').max(3, 'Elegí hasta tres opciones.').refine(v => new Set(v).size === v.length, 'No repitas opciones.'),
- imagen: z.enum(['juegos','cocina','pintura','picnic','trivia','sabores']), alt: text(240),
+ imagen: z.enum(['juegos','cocina','pintura','picnic','trivia','sabores','ceramica']), alt: text(240),
  incluye: z.array(text(200)).min(1, 'Ingresá al menos un elemento.').max(12, 'Ingresá hasta 12 elementos.'), estado: z.enum(['publicado','borrador'])
 }).strict();
 export function fieldErrors(error) { return Object.fromEntries(error.issues.map(i => [i.path[0] || '_form', i.message])); }
