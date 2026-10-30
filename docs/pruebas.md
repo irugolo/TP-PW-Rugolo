@@ -98,3 +98,16 @@ Severidad baja/prioridad media. GET público mostró `ceramica-y-vino` con detal
 Commit `1ee22d4`: [CI40965666501](https://github.com/irugolo/TP-PW-Rugolo/actions/runs/40965666501) aprobada; [Vercel Ready](https://vercel.com/programacion-web/tp-pw-rugolo/EWA9ad9TRQAn1pM5L9eZkJ1Pybyx). Build pasó con el mismo gate, sin omitir pruebas. `NODE_ENV=production npm test` con probe todavía presente dio48pass/1fail intencional tras el arreglo B05. Probe retirado en ese commit.
 
 Edge Preview actualizado29/10: GET405 y POST sin firma401, ambos con x-correlation-id. GET a MP del pago185404201114 confirma approved, mismo vendedor/comprador test, descriptor fake, importe35000; pedido sigue pagado/cupos_asignados=true. Lectura solamente, sin nueva transacción.
+
+## Cierre del 30/10/2026
+
+Los avisos de fallo del commit `1fb8918` corresponden al ejercicio deliberado. No son el estado actual: `c46bcdd` tiene [CI aprobada](https://github.com/irugolo/TP-PW-Rugolo/actions/runs/40966280406) y [Vercel Ready](https://vercel.com/programacion-web/tp-pw-rugolo/Br1wPWq1pLzfk3AUtQ4Q3h3kaajh). El probe fue eliminado; no se deshabilitaron pruebas.
+
+- M01/M02/M03: autora confirmó navegación por teclado, zoom200% y VoiceOver en inicio, detalle, cuenta y pedido confirmado: “todo perfecto”. Verificación manual informada, no certificación WCAG.
+- M04: en respuesta al caso de cerrar checkout antes del regreso, autora informó pedido `03d42fdf-5833-481e-af8e-aa5df5ca1f78` confirmado. Lectura independiente30/10: DB pagado/cupos_asignados=true; MP pago `185712791897` approved, ARS18.000, referencia coincidente, vendedor3762598376/comprador3762598386 y descriptor Mercadopago*fake. No se efectuó un nuevo cobro desde las herramientas. La acción de cerrar la pestaña es evidencia informada por la autora; el estado del pago/pedido fue comprobado por API.
+- Migración de cerámica aplicada solo a Preview después del asset Ready; GET publicado confirmó contenido e imagen nuevos. No cambió precio, pedidos ni cupos.
+- Preview publicada comprobada mediante CLI nativa: inicio/catálogo/detalle/auth/imagen200; API catálogo200, filtro inválido400, inexistente404, pedidos anónimo401/no-store. Reservar plan habilitado. HTTP308→HTTPS y HTTPS302 al login Vercel sin autorización: privacidad conservada.
+- Sesión QA normal contra Vercel publicado (`verify-preview-session.mjs`): perfil/pedidos propios200, cliente bloqueado en admin y API403; cuenta QA y temporal0600 eliminados. No usa sesiones personales.
+- HTML y9JS publicados comparados junto a archivos locales contra Access Token test/service_role reales:0coincidencias en139archivos. HMAC no descargable: revisión de flujo, no comparación de valor. No se subieron trazas.
+
+M05 exploratorio adicional sigue pendiente; no bloquea la evidencia ya obtenida. Publicación final sigue bloqueada por aprobación y producción pausada. No se fusionó el PR ni se modificó producción. Checks del último commit documental y evidencia complementaria se consultan en PR#5.
