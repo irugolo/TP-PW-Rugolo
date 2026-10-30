@@ -46,3 +46,13 @@ Riesgos concretos: pausa Free, configuración/correo envejecidos, migraciones pe
 Reversión: dejar anotado SHA/deployment anterior y export privado de configuración. Si falla el nuevo build, no promoverlo. Si falla runtime tras publicar, rollback al deployment anterior y deshabilitar `MP_TEST_MODE` en Production hasta resolver; mantener registros/migraciones aditivas, no borrar pedidos ni ejecutar down destructivo. Un rollback de código no deshace DB y el antiguo E3 no resuelve por sí solo una base pausada.
 
 Hasta la aprobación: revisar por lectura; no restaurar Production, aplicar migraciones allí, cambiar sus variables ni fusionar. `.vercel.app` es suficiente; no DNS, dominio ni Log Drains pagos.
+
+## Preparación de publicación autorizada — 30/10/2026
+
+La autora autorizó integrar el PR y confirmó teclado, zoom 200 % y VoiceOver de la renovación. Se reactivó el proyecto Production existente en Free mediante `POST /v1/projects/{ref}/restore`; alcanzó ACTIVE_HEALTHY. No se crearon proyectos ni recursos pagos.
+
+Antes de migrar se respaldaron tablas public/auth y el historial de migraciones en un directorio temporal privado (0700; archivos0600), fuera de Git. Se usó un workdir CLI temporal para Production: el enlace habitual del repositorio sigue siendo Preview. Se aplicaron únicamente las migraciones pendientes desde E3 hasta `20261030000100`. Resultado:23 planes publicados; perfiles, usuarios e identidades existentes sin cambios. `irugolo@itba.edu.ar` conserva su cuenta confirmada con rol admin: no debe registrarse nuevamente.
+
+Los callbacks exactos de producción, incluido `?next=recovery`, están presentes y se mantiene confirmación de correo. SMTP figura configurado; la comprobación de conexión realizada desde el agente fue interrumpida por el servidor, por lo que no se afirma entrega comprobada en esta publicación.
+
+La clave de firma no es recuperable desde las variables sensibles de Preview. `python3 scripts/configure-production-mp-webhook.py` permite ingresarla localmente, oculta, para la aplicación del vendedor test244496639018253. No se debe rotar la clave existente. El script solo apunta a Production, usa un temporal privado que elimina al terminar y transmite el valor a Vercel por stdin. La fusión queda pendiente de completar y verificar esa configuración; autorización para fusionar ya recibida.

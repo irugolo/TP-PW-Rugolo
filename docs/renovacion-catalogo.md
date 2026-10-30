@@ -42,3 +42,5 @@ portada-poster.jpg: 46.015 bytes
 Validación adicional ejecutada: CRUD con dos cuentas QA de Preview, rol admin temporal, edición de condiciones desde el formulario, lectura en otra sesión, borradores ocultos, revocación de rol y sesión. Cuentas y registro QA eliminados al finalizar. Axe también aplicado al formulario ampliado del admin a 375/768/1440 px. Capturas locales de portada y catálogo inspeccionadas; se ajustó el encuadre de auroras para conservar a las personas.
 
 También se comprobó en Chromium aislado el rechazo de autoplay (poster y acciones disponibles) y el evento de pestaña oculta (todos los videos pausados). Pruebas Python: 10 aprobadas.
+
+La autora confirmó posteriormente que la revisión manual de teclado, zoom 200 % y VoiceOver funciona en esta última versión, además de aprobar el resultado visual. Se registra como comprobación manual informada por la autora, no como prueba automatizada.
