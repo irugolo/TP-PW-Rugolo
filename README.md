@@ -1,146 +1,99 @@
-# Fuera de Plan · E3
+# Fuera de Plan
 
-Next.js App Router, React y Supabase. Mantiene la portada, fotografías, filtros y rutas de E2. Experiencias ficticias, precios ilustrativos en ARS; no hay reservas ni pagos.
+Proyecto académico con Next.js App Router, React y Supabase. Catálogo, cuentas cliente/admin, CRUD de experiencias y compra directa de una experiencia con Mercado Pago Checkout Pro. Las reservas y los pagos habilitados en esta rama son de demostración.
 
-**Estado:** Supabase Preview conectado, migraciones aplicadas y seis experiencias consultadas desde la base real. Organización **Fuera de Plan**, plan **Free**, proyecto **fuera-de-plan-preview** (`kulvagylilutnpckpiuw`), región São Paulo (`sa-east-1`). Producción conserva su catálogo estático y no comparte esta base. La autora ya se registró, confirmó su correo y recibió admin tras verificar su UUID. La autora confirmó registro cliente, confirmación de correo, bloqueo del panel admin para cliente, recuperación e ingreso con la contraseña nueva. La autora ejecutó satisfactoriamente las pruebas automatizadas con sesiones normales cliente/admin contra el servidor local y Supabase Preview. Quedan los controles manuales detallados de accesibilidad y errores.
+**Preview privada:** https://tp-pw-rugolo-e4e6-programacion-web.vercel.app
 
-Registro habilitado en [la preview configurada](https://tp-pw-rugolo-mlo1e0avn-programacion-web.vercel.app/auth). Elegir Registrarme, usar el email autorizado y una contraseña propia de al menos 12 caracteres; abrir el correo de confirmación en el mismo navegador y perfil. Si Vercel solicita acceso, ingresar con la cuenta propietaria de Vercel. No compartir contraseña, enlace de confirmación ni cookies.
+**PR sin fusionar:** https://github.com/irugolo/TP-PW-Rugolo/pull/5
 
-## Desarrollo
+Preview y producción usan bases separadas. Esta etapa modifica código y Preview; no habilita pagos reales, no publica producción ni contrata recursos. El webhook de Preview es público y exige firma; la web mantiene Deployment Protection.
 
-Node >=22.12 (CI usa `.nvmrc`). Dependencias y CLI Supabase fijadas en `package-lock.json`.
+## Desarrollo y pruebas
+
+Node >=24 (CI y Vercel: 24.x); CI utiliza `.nvmrc`. Las versiones instaladas están fijadas por `package-lock.json`.
 
 ```sh
 npm ci
 cp .env.example .env.local
 npm run dev
-```
-
-Completar `.env.local` localmente, sin compartir su contenido:
-
-- `NEXT_PUBLIC_SUPABASE_URL`: URL del proyecto autorizado.
-- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: clave pública publishable (también admite anon heredada).
-- `APP_ORIGIN`: origen exacto, sin barra final; local `http://localhost:3000`.
-
-No agregar claves secretas o service_role a estas variables. La aplicación no necesita claves privilegiadas. `.env*` está ignorado salvo `.env.example`, que solo contiene nombres vacíos.
-
-## Conexión y migraciones
-
-Las dos migraciones versionadas ya están aplicadas a la base de Preview. Se comprobó el esquema vacío antes de aplicarlas, el historial posterior y RLS activa en ambas tablas. No se ejecutó reset.
-
-Se reutilizó la sesión nativa del llavero. `scripts/check-supabase-plan.sh` permite verificar el plan por API cuando la CLI no lo expone: usa `mktemp`, permisos privados y limpieza ante salida, errores y señales capturables; guarda solo metadatos no secretos en `supabase/.temp/`. Ningún proceso garantiza limpieza ante SIGKILL o apagado abrupto.
-
-`.env.local` contiene únicamente la URL, clave pública y origen local. La contraseña de base generada quedó en `.env.supabase-db`, con permisos 600. Ambos archivos están ignorados por Git y excluidos explícitamente de Vercel mediante `.vercelignore`; no se exportó el access token a una ruta fija.
-
-Para futuros entornos, usar la CLI instalada con `npx supabase`. No instalar globalmente ni levantar Docker.
-
-1. `npx supabase login`: ingresar el **access token** solo en la terminal. No confundirlo con una clave service_role.
-2. `npx supabase projects list`: seleccionar explícitamente el proyecto y confirmar si comparte base con producción. Si no existe, crear únicamente uno gratuito en la organización autorizada mediante CLI/API.
-3. `npx supabase link --project-ref REF`: utilizar la contraseña de DB solo en el prompt o mediante `SUPABASE_DB_PASSWORD` local, nunca en Git ni en mensajes.
-4. Inspeccionar esquema, triggers, permisos y `supabase_migrations.schema_migrations` con `npx supabase db query --linked`. Consultar `--help` para la sintaxis de esta versión. Guardar cualquier exportación fuera del repositorio; puede contener datos privados.
-5. Revisar posibles conflictos con `perfiles`, `experiencias`, funciones y triggers propuestos. La migración falla ante objetos incompatibles; **no** usa `DROP`, reset ni reemplazo silencioso. Adaptar mediante migración aditiva si ya existe esquema.
-6. `npx supabase db push --dry-run`, revisar el resultado; después `npx supabase db push`. No ejecutar `db reset` sobre la base remota.
-7. Consultar nuevamente tablas y políticas; ejecutar la verificación remota indicada abajo.
-
-`20261001000100_schema.sql` crea perfiles vinculados a `auth.users` por UUID (borrado de cuenta elimina su perfil), experiencias y políticas. Los usuarios existentes reciben perfil cliente. `20261001000200_demo.sql` reutiliza los seis planes originales por slug y usa `ON CONFLICT DO NOTHING`; no sobrescribe datos existentes. `src/data/experiencias.js` queda como fuente histórica de fixtures y formato monetario, no como fuente del catálogo en ejecución.
-
-## Auth, permisos y seguridad
-
-- `@supabase/ssr`: clientes de servidor y navegador; cookies renovadas en `src/proxy.js` para Next 16. `getUser()` valida identidad en cada página/operación protegida, sin confiar en `getSession()`.
-- `/auth`: registro, ingreso, recuperación y actualización de contraseña. Callback PKCE en `/auth/callback`; destinos internos fijos, sin redirecciones arbitrarias.
-- Registro público siempre cliente: trigger ignora metadata editable. Contraseñas solo en Supabase Auth.
-- `/mi-cuenta`: lee el perfil propio y modifica únicamente nombre y teléfono.
-- `/admin`: CRUD, detalle, publicación/borrador, confirmación de eliminación y métricas reales (total, publicadas, borradores, clientes).
-- RLS: visitantes ven publicados; clientes solo su perfil; admin gestiona experiencias. Permisos por columna impiden modificar rol, ID y fecha, incluso por API directa. Función `private.is_admin()` con `search_path` vacío evita recursión en políticas. `admin_metrics()` autoriza dentro de SQL y devuelve agregados, sin exponer perfiles ajenos.
-- IDs de experiencias inmutables; restricciones de texto, precio, arrays y valores permitidos también en SQL. Si una FK futura impide eliminar, la API devuelve conflicto y conserva datos. No hay relaciones ficticias con reservas inexistentes.
-- Mutaciones Route Handler requieren Origin exacto y JSON; no se confía en Host/Forwarded-Host para autorizar orígenes. Sin `APP_ORIGIN`, preview usa `https://${VERCEL_URL}` y local usa localhost:3000. Usar el mismo origen en callbacks y pruebas.
-
-**Asignación de admin:** realizada el 06/10/2026 tras comprobar el registro y la confirmación del correo autorizado. El rol admin se volvió a consultar y quedó persistido. Solo mediante SQL privilegiado desde terminal, después de verificar el registro en `auth.users`; actualizar `perfiles.rol` para ese UUID exacto y consultar nuevamente. No hay endpoint de promoción ni claves secretas en la app. No ejecutar una promoción para una cuenta inferida.
-
-## Confirmación de correo y recuperación
-
-El archivo `supabase/config.toml` configura el entorno local. La configuración alojada de Preview ya se revisó y aplicó mediante `supabase config diff/push` con un archivo mínimo temporal. Solo cambiaron Site URL, allowlist y longitud mínima; las demás propiedades remotas se conservaron. Configuración comprobada:
-
-- Confirmación por email habilitada (`mailer_autoconfirm: false`).
-- Contraseña mínima 12 (`password_min_length: 12`).
-- Site URL autorizada y allowlist con URLs exactas: `http://localhost:3000/auth/callback`, `http://localhost:3000/auth/callback?next=recovery` y sus equivalentes HTTPS del deployment preview seleccionado.
-- No usar comodines amplios. Mantener URLs de producción existentes si la base es compartida; no cambiar Site URL de producción para una prueba.
-- Mantener plantillas PKCE compatibles con `ConfirmationURL`, que retornan `code` al callback. El enlace debe abrirse en el mismo navegador donde comenzó el flujo PKCE. Un enlace inválido/expirado muestra error y permite solicitar otro.
-
-El agente no creó cuentas ni envió correos. La autora completó registro y recuperación con su cuenta propia mediante el SMTP Gmail autorizado para pruebas. El SMTP predeterminado de Supabase solo permite destinatarios del equipo del proyecto y tiene límites bajos de envío; la autora es propietaria de esta organización. Registrar otros clientes por email requiere configurar un SMTP autorizado, sin desactivar confirmaciones ni contratar servicios pagos automáticamente. [Restricciones oficiales del SMTP predeterminado](https://supabase.com/docs/guides/auth/auth-smtp).
-
-## Evidencia E3
-
-`DataForm.jsx` comparte esquemas Zod con el servidor: tipos, requeridos, longitudes, formatos, límites y enums; objetos estrictos rechazan atributos adicionales. Perfil y experiencias llaman **fetch explícito** a `/api/perfil` y `/api/experiencias[/id]` (PATCH/POST). El servidor verifica identidad, rol y datos antes de persistir con la sesión normal del usuario. DELETE también usa fetch y confirmación.
-
-Formularios con labels, errores asociados, foco al primer error, mensajes `role=status`, bloqueo de doble envío, timeout y conservación de texto ante fallos. `response.ok` obligatorio. El resultado guardado actualiza campos/lista/métricas mediante estado React sin recargar la página. El catálogo se consulta desde Supabase en cada navegación SSR; hay estados vacío, carga y error.
-
-## Verificación por terminal
-
-```sh
-npm run lint
 npm test
+npm run lint
 npm run build
-npm run start
+python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
-`npm test` ejecuta validación y HTTP (JSON, origen, errores sanitizados) y aplica las migraciones en PostgreSQL embebido PGlite sin Docker. Comprueba seed no duplicado, registro cliente pese a metadata admin, aislamiento de perfiles, denegación de escalada, publicación, CRUD y reconsulta, métricas y restricciones. **auth.uid está emulado en esa prueba: no demuestra sesiones reales de Supabase.**
+Completar únicamente las variables públicas Supabase de Preview y `APP_ORIGIN=http://localhost:3000` para desarrollo. No copiar claves secretas en `NEXT_PUBLIC_*`. `.env*` está ignorado salvo `.env.example`; los secretos también están excluidos del despliegue mediante `.vercelignore`.
 
-Para probar el proyecto remoto autorizado, guardar en un archivo `.env.remote` ignorado las variables públicas, `TEST_ORIGIN` y tokens access/refresh de **dos sesiones normales existentes y autorizadas**, una cliente y una admin: `TEST_CLIENT_ACCESS_TOKEN`, `TEST_CLIENT_REFRESH_TOKEN`, `TEST_ADMIN_ACCESS_TOKEN`, `TEST_ADMIN_REFRESH_TOKEN`. No usar service_role, compartir tokens ni registrarlos en salida.
+La lectura de catálogo y las operaciones de perfil/administración usan sesiones normales y RLS. Checkout y webhook necesitan una clave privilegiada **solo en servidor**, además del token del vendedor de prueba y la firma de Webhooks. Se configuran mediante los asistentes `scripts/configure-mp-test.py` y `scripts/configure-mp-webhook.py`, con entrada oculta. Nunca publicar sus valores ni pasarlos como argumentos. La aplicación de prueba del vendedor es distinta de la aplicación de la cuenta personal de developer.
+
+## Autenticación y permisos
+
+1. Registro: el navegador envía email y contraseña directamente a Supabase Auth. El proveedor valida la contraseña (mínimo 12), administra hashing/salting y exige confirmación por correo. El trigger crea siempre un perfil cliente, ignorando roles en metadata.
+2. Confirmación: callback PKCE, intercambio de código y retorno a una ruta interna fija. Los enlaces deben abrirse en el mismo navegador/perfil. Enlace inválido o vencido: mensaje genérico y posibilidad de solicitar otro.
+3. Sesión: `@supabase/ssr` mantiene cookies y renovación; Proxy renueva/verifica claims. Las páginas y API protegidas usan `getUser()` y consultan el perfil actual en servidor.
+4. Autorización: `identity(true)` exige admin. RLS y permisos SQL controlan los datos, incluso con llamadas directas a Supabase. El rol no es editable por clientes ni administradores desde la web.
+5. Logout: cierra explícitamente la sesión actual (`scope: local`), limpia el estado del cliente y vuelve a `/auth`. No equivale a invalidar inmediatamente todo JWT previamente copiado ni a cerrar otros dispositivos.
+
+### Matriz de permisos
+
+| Ruta / operación | Visitante | Cliente | Admin |
+|---|---|---|---|
+| `/experiencias`, detalle, GET `/api/experiencias[/id]` | Publicados | Publicados | Publicados en API pública |
+| `/auth`, callback | Registro/login/recuperación | Disponible | Disponible |
+| `/mi-cuenta`, PATCH `/api/perfil` | 401 / redirección | Perfil propio: nombre/teléfono | Perfil propio: nombre/teléfono |
+| `/admin`, POST/PATCH/DELETE `/api/experiencias[/id]` | 401 / redirección | 403 / redirección | CRUD autorizado |
+| `/pedidos`, GET `/api/pedidos[/id]` | 401 / redirección | Solo propios | Lectura administrativa |
+| POST `/api/pedidos` y checkout | 401 | Pedido propio, precio del servidor | Pedido propio, mismas reglas |
+| Alterar rol/precio del pedido/pago/cupos | No | No | No desde API cliente |
+| Webhook público | Firma + consulta API obligatorias; no sesión de usuario | Igual | Igual |
+
+Un pedido ajeno y uno inexistente devuelven 404 para no revelar su existencia. Los errores no exponen credenciales ni mensajes internos del proveedor. Los POST/PATCH/DELETE de la web exigen Origin exacto y JSON, además de identidad/permisos. Las respuestas privadas no se cachean.
+
+Ver [auditoría de clase 09](docs/clase09-seguridad.md) para cookies, límites, pruebas y restricciones de revocación.
+
+## Base de datos y migraciones
+
+Supabase Preview: `kulvagylilutnpckpiuw`, región São Paulo, plan Free. No reutilizar las credenciales de producción. Revisar el proyecto enlazado antes de ejecutar:
 
 ```sh
-node --env-file=.env.remote scripts/verify-remote.mjs
+npx supabase db push --dry-run
+npx supabase db push
 ```
 
-El script no crea usuarios ni envía correos. Prueba Route Handlers y API directa con sesiones normales, no acceso a admin, payloads inválidos, perfiles ajenos, elevación de rol, CRUD y reconsulta. Crea una experiencia temporal identificada `e3-verificacion-*` y la elimina al finalizar; si el proceso se interrumpe, retirar únicamente esa fila. Requiere acceso HTTP a la preview (si Vercel tiene protección, usar una sesión/bypass autorizado por terminal). Pendiente de dos sesiones normales autorizadas; todavía no se ejecutó. Para una preview protegida, puede usarse `TEST_VERCEL_BYPASS_SECRET` local: el script lo envía como header sin imprimirlo. El perfil se modifica, se vuelve a consultar y se restaura; también se elimina la experiencia temporal.
+Nunca ejecutar reset en remoto. Migraciones versionadas: perfiles/experiencias y RLS; fixtures de catálogo; pedidos/pagos/cupos; comprobación de cuentas de prueba; límite persistente de creación de pedidos. Una experiencia nueva necesita cupos demo provisionados antes de poder comprarse.
 
-**Revisión visual pendiente a cargo de la autora:** 360/768/1440 px, zoom 200 %, teclado/foco, anuncios con lector de pantalla, formularios válidos/erróneos y fallo de red. Registro y recuperación con correo propio fueron confirmados por la autora. No se abrió ni automatizó ningún navegador en E3. La evidencia visual de E2 permanece en el historial del PR #3, no se asume válida para los nuevos formularios.
+Los pedidos guardan el nombre, descripción, precio y cantidad utilizados en la compra. La confirmación asigna cupos en una transacción, con manejo de duplicados y estados fuera de orden. No hay reservas temporales ni carrito multiexperiencia. Un pago sin cupo disponible queda en revisión, no fuerza sobreventa ni devolución automática.
 
-## GitHub y preview
+## Evidencia y límites
 
-Rama E3 derivada de `feat/e2-nextjs`; PR apilado sobre E2 para no duplicar su revisión. CI ejecuta instalación limpia, lint, tests y build. No fusionar ni usar `vercel --prod`.
+- [E3: pruebas previas de formularios, CRUD y sesiones](docs/e3-verificacion.md). La autora confirmó registro, correo, ingreso y permisos cliente/admin. El 29/10 volvió a confirmar recuperación: formulario Nueva contraseña y login posterior correcto. El asistente interactivo probó sesiones normales contra servidor local y Supabase Preview; no implica cobertura nueva de todas las rutas en Vercel.
+- [E4/E6: historial de implementación](docs/e4-e6-estado.md). Compra nueva de Cocina en equipo por ARS35.000, pago `185404201114`, webhook automático 200, pedido pagado y un cupo asignado. [Evidencia en PR](https://github.com/irugolo/TP-PW-Rugolo/pull/5#issuecomment-6325400430).
+- Los tests de HTTP usan identidades/proveedores simulados; PGlite ejecuta PostgreSQL con `auth.uid()` emulado. No equivalen a sesiones reales, concurrencia remota ni pagos externos en todos los escenarios.
+- Concurrencia remota verificada con fixtures: último cupo y duplicados simultáneos, sin sobreasignación; limpieza completa. La autora confirmó accesibilidad manual y compra sin retorno, contrastada con pago/pedido el30/10. Pendientes: excepciones MP completas y publicación final autorizada. Reembolsos parciales/contracargos y preferencias inciertas requieren revisión operativa; no se declara seguridad absoluta.
+- Controles manuales de esta etapa: [checklist breve](docs/clase09-seguridad.md#controles-manuales-pendientes). La nueva captura de compra confirma escritorio, no móvil/zoom/teclado.
 
-Las dos variables públicas ya están configuradas únicamente en Preview, rama `feat/e3-supabase-auth`, mediante `vercel env add NOMBRE preview --git-branch feat/e3-supabase-auth`, ingresando valores por stdin. Production no tiene variables Supabase. `APP_ORIGIN` solo está configurado localmente. Sin `APP_ORIGIN`, se usa la URL exacta de deployment de Vercel. Recompilar tras configurar variables `NEXT_PUBLIC_*`. Si preview comparte DB de producción, las escrituras de preview afectan esa misma base: no aplicar cambios incompatibles ni alterar su Auth sin revisar el impacto.
+Para pruebas autenticadas locales sin compartir credenciales: iniciar `npm run dev` y ejecutar `python3 scripts/verify-interactive.py` en otra terminal. Pide credenciales ocultas, mantiene tokens en memoria, modifica/restaura un perfil y crea/elimina una experiencia temporal. No repetir sin necesidad; esta auditoría no requiere nuevas compras ni correos.
 
-## Documentación contrastada
+## Auditoría de rúbrica y defensa (29/10/2026)
 
-- [Supabase SSR y Proxy para Next 16](https://supabase.com/docs/guides/auth/server-side/creating-a-client)
-- [Auth por email y contraseña](https://supabase.com/docs/guides/auth/passwords)
-- [RLS y políticas](https://supabase.com/docs/guides/database/postgres/row-level-security)
-- [CLI oficial mediante npm](https://supabase.com/docs/guides/local-development/cli/getting-started)
+- [Matriz E1–E6 y cinco criterios](docs/rubrica.md): aceptación, evidencia y pendientes.
+- [Pruebas, bugs reales y checklist manual](docs/pruebas.md): distingue mocks, navegador aislado, SQL real y compra MP histórica.
+- [Entornos, logs, CI/CD y publicación/reversión](docs/operacion.md): producción está pausada; publicación requiere aprobación.
+- [Recorrido y preguntas de defensa](docs/defensa.md).
 
-Se consultó el material local de clase “08-clase Supabase-08.pptx.pdf”: relaciones PK/FK, CRUD, Auth, aislamiento por fila y separación de claves privilegiadas.
+CI ejecuta Chromium headless con backend ficticio sin secretos:
 
-Verificación local realizada el 01/10/2026: `npm ci`, lint, 10 pruebas y build correctos. HTTP: inicio/catálogo/auth 200, ruta inexistente 404, admin/cuenta redirigen a auth sin contenido protegido y mutación con origen ajeno devuelve 403. Next puede emitir la redirección como meta refresh con HTTP 200 cuando ya empezó el streaming de `loading.js`; la prueba comprueba el destino y ausencia del panel, no solo el código HTTP.
+```sh
+npm run build:e2e
+npx playwright install chromium
+npm run test:e2e
+```
 
+Ese build usa datos/configuración ficticios: nunca desplegarlo como producción. Vercel construye con sus propias variables mediante integración Git; lint y pruebas preceden al build. main exige el check de CI. No subir trazas/capturas con sesiones a este repositorio público. Pruebas reales aisladas de Auth/CRUD y concurrencia tienen comandos/precondiciones en la documentación; crean y eliminan únicamente fixtures.
 
-## Evidencia de la conexión remota
+Modelo: `auth.users` 1:1 `perfiles`; usuarios 1:N `pedidos_demo`; experiencias 1:N pedidos y 1:1 `cupos_demo`; pedidos 1:N `pagos_demo`. IDs/foreign keys, cantidades y montos controlados; snapshot del pedido conserva condiciones de compra. No borrar experiencias con pedidos: despublicarlas.
 
-- `node --env-file=.env.local scripts/verify-public.mjs`: seis planes persistidos consultados dos veces; perfiles y métricas denegados para anónimos.
-- `node --env-file=.env.local scripts/verify-anonymous-rls.mjs`: crea un borrador temporal mediante CLI únicamente en este proyecto de Preview; comprueba con clave pública que está oculto y que INSERT/UPDATE/DELETE devuelven `42501`; elimina las filas temporales en `finally` y comprueba su ausencia. No crea usuarios, no envía correos ni usa service_role en las aserciones.
-- Preview HTTP por `vercel curl`: catálogo, detalle y registro disponibles; `/admin` redirige a `/auth` sin panel; PATCH perfil y POST experiencias anónimos devuelven 401; origen ajeno devuelve 403; callback inválido devuelve 307 a un destino interno fijo.
-- Lint, diez pruebas locales y build aprobados. Estas pruebas locales usan PostgreSQL embebido; las remotas anteriores prueban el rol anónimo real. La autora ejecutó el asistente interactivo y compartió su resultado satisfactorio: sesiones cliente/admin, Route Handlers locales, edición/restauración de perfil, CRUD temporal y RLS contra Supabase Preview. La recuperación fue verificada manualmente por la autora.
-- Auditoría de dependencias de ejecución: sin vulnerabilidades. La auditoría completa detectó un aviso en `braces` (herramientas de lint) sin parche compatible disponible al consultar; no se aplicó el downgrade mayor sugerido por `npm audit --force`.
+La habilitación preparada para la demo pública es explícita (`MP_DEMO_PRODUCTION_ENABLED`), usa exclusivamente base Production y pagos test; actualmente no está activada. No se copian usuarios entre bases. El proyecto sigue pendiente de publicación final y no puede considerarse disponible públicamente mientras Supabase Production esté pausada.
 
-
-## Pruebas manuales y verificación autenticada
-
-La autora informó que el CRUD de administrador (crear, editar, publicar, despublicar y eliminar) funciona y que visualmente ve bien la web. Esta es evidencia manual comunicada por la autora, no una ejecución automática ni una auditoría de teclado/lector de pantalla. Las mejoras de imágenes quedaron para después. La autora también confirmó registro y correo del cliente, acceso denegado al panel admin, cambio de contraseña por recuperación e ingreso con la nueva contraseña. Los casos manuales de campos inválidos y fallo de red todavía no fueron confirmados.
-
-Existen ambas cuentas confirmadas según la prueba manual de la autora. El script terminó de configurar SMTP Gmail para Preview y la entrega quedó comprobada mediante registro y recuperación, sin agregar al cliente al equipo de Supabase ni desactivar confirmaciones.
-
-Con ambas cuentas confirmadas, se pueden ejecutar pruebas sin copiar tokens ni compartir contraseñas con el agente:
-
-1. En una terminal del proyecto: `npm run dev` (localhost:3000, usando `.env.local` de la base Preview).
-2. En otra terminal: `python3 scripts/verify-interactive.py`.
-3. Ingresar los emails y contraseñas de las dos cuentas propias en los prompts locales; las contraseñas no se muestran.
-
-El asistente autentica contra Supabase, verifica los roles e invoca `verify-remote.mjs` con los tokens solo en memoria. Comprueba las Route Handlers del servidor local y la base remota Preview, modifica/restaura el perfil de prueba y crea/elimina una experiencia temporal. Al terminar intenta revocar únicamente sus propias sesiones (no la sesión del navegador). No guarda contraseñas/tokens en archivos ni los pasa como argumentos. Si se interrumpe abruptamente, revisar posibles fixtures como indica la sección de verificación remota.
-
-La autora completó la ejecución el 7 de octubre de 2026 y compartió ambas líneas de éxito: `OK: sesiones normales, Route Handlers, persistencia consultada nuevamente y RLS remota.` y `Prueba autenticada completada con sesiones normales.` Esto verifica el servidor local conectado a la base Preview; no equivale a ejecutar la misma suite HTTP en Vercel. La suite incluye bloqueo de escalada de rol y edición de perfiles ajenos, borradores ocultos, permisos de métricas y limpieza/restauración de los datos temporales. No se solicitaron ni compartieron credenciales con el agente.
-
-Para usar Gmail como remitente de pruebas, la autora autorizó SMTP mediante una contraseña de aplicación de Google. Debe generarla en su cuenta con verificación en dos pasos y ejecutar `python3 scripts/configure-preview-smtp.py`. El script pide el email y la contraseña de aplicación de forma oculta; autentica por TLS sin enviar correos y configura únicamente el proyecto Preview mediante la sesión nativa de Supabase CLI. La clave se transmite a Supabase para el servicio de correo, nunca a Vercel ni a la aplicación web; no se guarda en archivos locales o argumentos. El TOML temporal contiene una referencia a una variable de entorno y se elimina al terminar. `supabase/.temp/smtp-check.json` guarda solo el resultado no secreto. No modifica Production, roles, cuotas ni desactiva confirmación. La entrega del correo solo se verifica después mediante registro real. La autora ejecutó el script con éxito y confirmó la entrega de registro y recuperación. Se corrigió la selección explícita de salida JSON de la CLI; cinco pruebas Python verifican el formato y que los errores no expongan credenciales, y se incorporaron a CI.
-
-## Cierre técnico E3
-
-Ver [evidencia y checklist manual](docs/e3-verificacion.md). Suite ampliada a 22 pruebas JavaScript y 5 Python: casos inválidos en handlers reales con identidad simulada, errores/reintentos en DOM y foco accesible. La verificación manual de teclado, lector de pantalla, tamaños/zoom y red real permanece pendiente de confirmación.
+### Renovación de portada y catálogo (Preview)
+23 nuevas propuestas reservables, videos progresivos, filtros combinables y contenido editable. Alcance, migración idempotente, recursos y evidencia: [docs/renovacion-catalogo.md](docs/renovacion-catalogo.md). La producción no se modifica en esta etapa.

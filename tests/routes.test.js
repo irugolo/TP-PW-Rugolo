@@ -2,6 +2,7 @@ import {test,mock} from 'node:test';
 import assert from 'node:assert/strict';
 import {experiencias} from '../src/data/experiencias.js';
 let writes=0;
+mock.module('../src/lib/catalog.js',{namedExports:{catalog:async()=>[]}});
 mock.module('../src/lib/access.js',{namedExports:{identity:async()=>({user:{id:'test-user'},db:{from(){writes++;throw new Error('No debe acceder a la base');}}})}});
 const {PATCH:profile}=await import('../src/app/api/perfil/route.js');
 const {POST:create}=await import('../src/app/api/experiencias/route.js');

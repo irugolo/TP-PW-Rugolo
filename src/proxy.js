@@ -1,10 +1,10 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
-import { config as credentials, configured } from './lib/supabase/config';
+import { config as credentials, configured, sessionCookieOptions } from './lib/supabase/config';
 export async function proxy(request) {
  let response = NextResponse.next({ request });
  if (!configured()) return response;
- const supabase = createServerClient(...credentials(), { cookies: {
+ const supabase = createServerClient(...credentials(), { cookieOptions: sessionCookieOptions(), cookies: {
   getAll: () => request.cookies.getAll(),
   setAll(items) {
    items.forEach(({ name, value }) => request.cookies.set(name, value));
@@ -16,4 +16,4 @@ export async function proxy(request) {
  response.headers.set('Cache-Control', 'private, no-store');
  return response;
 }
-export const config = { matcher: ['/((?!_next/static|_next/image|favicon.ico|images/).*)'] };
+export const config = { matcher: ['/((?!api/webhooks/mercadopago|_next/static|_next/image|favicon.ico|images/).*)'] };

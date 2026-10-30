@@ -16,6 +16,7 @@ test('migraciones, restricciones y permisos RLS en PostgreSQL aislado',async t =
  await db.exec(await readFile('supabase/migrations/20261001000100_schema.sql','utf8'));
  const seed = await readFile('supabase/migrations/20261001000200_demo.sql','utf8');
  await db.exec(seed);await db.exec(seed);
+ await db.exec(await readFile('supabase/migrations/20261029000100_catalog_content.sql','utf8'));
  await db.query('insert into auth.users values ($1,$4),($2,$4),($3,$4)',[client,other,admin,{rol:'admin'}]);
  assert.equal((await db.query('select count(*)::int n from public.experiencias')).rows[0].n,6);
  assert.ok((await db.query('select rol from public.perfiles')).rows.every(r=>r.rol==='cliente'));
@@ -53,5 +54,7 @@ test('migraciones, restricciones y permisos RLS en PostgreSQL aislado',async t =
   await db.exec("delete from public.experiencias where id='test-admin'");
   assert.equal((await db.query("select * from public.experiencias where id='test-admin'")).rows.length,0);
  }));
+ await db.query("update public.perfiles set rol='cliente' where id=$1",[admin]);
+ await as('authenticated',admin,async()=>{await assert.rejects(db.query('select public.admin_metrics()'));});
  await db.close();
 });

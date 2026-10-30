@@ -16,3 +16,7 @@ out/
 
 __pycache__/
 *.pyc
+
+# Browser artifacts can contain sessions; never commit or publish.
+test-results/
+playwright-report/

@@ -19,7 +19,7 @@ test('campos vacíos: errores asociados, foco y ningún envío', async () => {
  let calls=0;globalThis.fetch=async()=>{calls++;};
  render(<DataForm initial={emptyExperience}/>);submit();
  await waitFor(()=>assert.ok(document.activeElement === screen.getByLabelText('Identificador URL')));
- assert.equal(calls,0);assert.equal(screen.getByRole('group',{name:'Compañía'}).getAttribute('aria-invalid'),'true');
+ assert.equal(calls,0);assert.equal(screen.getByRole('group',{name:'Categorías'}).getAttribute('aria-invalid'),'true');
  for(const input of document.querySelectorAll('[aria-invalid="true"]')) assert.ok(document.getElementById(input.getAttribute('aria-describedby')).textContent);
 });
 for(const failure of ['offline','timeout','invalid-json','server']) test(`perfil ${failure}: conserva texto, termina carga y permite reintento`,async()=>{
@@ -55,8 +55,8 @@ test('eliminación fallida: foco, reintento y cancelación sin perder la experie
 
 let authCall;
 mock.module('next/navigation',{namedExports:{useRouter:()=>({replace(){},refresh(){}})}});
-mock.module('../../src/lib/supabase/browser.js',{namedExports:{supabaseBrowser:()=>({auth:{signInWithPassword:(...args)=>authCall(...args),signUp:(...args)=>authCall(...args),resetPasswordForEmail:(...args)=>authCall(...args),updateUser:(...args)=>authCall(...args)}})}});
-const {default:AuthForm}=await import('../../src/components/AuthForm.jsx');
+mock.module('../../src/lib/supabase/browser.js',{namedExports:{supabaseBrowser:()=>({auth:{signInWithPassword:(...args)=>authCall(...args),signUp:(...args)=>authCall(...args),resetPasswordForEmail:(...args)=>authCall(...args),signOut:(...args)=>authCall(...args),updateUser:(...args)=>authCall(...args)}})}});
+const {default:AuthForm,SignOut}=await import('../../src/components/AuthForm.jsx');
 for(const mode of ['Ingresar','Registrarme','Recuperar contraseña']) test(`auth ${mode}: desconexión libera carga, conserva datos y permite reintentar`,async()=>{
  authCall=async()=>{throw new TypeError('offline');};render(<AuthForm/>);
  fireEvent.click(screen.getByRole('button',{name:mode}));
@@ -74,4 +74,28 @@ test('auth HTML: vacíos, email inválido y límites declarados',()=>{
  const email=screen.getByLabelText('Email'),password=document.getElementById('password');
  assert.equal(email.checkValidity(),false);fireEvent.change(email,{target:{value:'incorrecto'}});assert.equal(email.checkValidity(),false);
  assert.equal(password.required,true);assert.equal(password.minLength,12);assert.equal(password.maxLength,128);
+});
+
+test('logout local, fallo recuperable y reintento',async()=>{
+ let scope;authCall=async(options)=>{scope=options.scope;return {error:new Error('network')};};
+ render(<SignOut/>);fireEvent.click(screen.getByRole('button',{name:'Cerrar sesión'}));
+ await waitFor(()=>assert.match(screen.getByRole('status').textContent,/No se pudo cerrar/));
+ assert.equal(scope,'local');assert.equal(screen.getByRole('button',{name:'Cerrar sesión'}).disabled,false);
+});
+test('Auth 429 no expone email; cambio de contraseña conserva entrada ante error',async()=>{
+ authCall=async()=>({error:{status:429}});render(<AuthForm recovery/>);
+ fireEvent.change(screen.getByLabelText(/Contraseña/),{target:{value:'fake-only-password'}});
+ fireEvent.submit(screen.getByRole('button',{name:'Continuar'}).closest('form'));
+ await waitFor(()=>assert.match(screen.getByRole('status').textContent,/Demasiados intentos/));
+ assert.equal(screen.getByLabelText(/Contraseña/).value,'fake-only-password');
+ assert.equal(screen.getByRole('button',{name:'Continuar'}).disabled,false);
+});
+
+test('retorno a Auth ya montado cambia login a nueva contraseña',()=>{
+ const {rerender}=render(<AuthForm recovery={false}/>);
+ assert.ok(screen.getByRole('button',{name:'Ingresar'}));
+ rerender(<AuthForm recovery/>);
+ assert.ok(screen.getByRole('heading',{name:'Nueva contraseña'}));
+ assert.equal(screen.queryByLabelText('Email'),null);
+ assert.equal(screen.getByLabelText(/Contraseña/).minLength,12);
 });
