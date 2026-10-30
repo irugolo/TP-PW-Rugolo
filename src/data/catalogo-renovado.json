@@ -1,0 +1,918 @@
+[
+  {
+    "id": "plan-fogon-junto-al-lago",
+    "nombre": "Fogón junto al lago",
+    "categoria": "Al aire libre",
+    "descripcion": "Una tarde junto al agua, fuego y sobremesa compartida.",
+    "detalle": "El agua marca el ritmo de esta tarde imaginada junto a un lago de Bariloche. La propuesta comienza con una recepción sencilla y tiempo para acomodarse en el sector de descanso, conversar y mirar cómo cambia la luz. Después llega una mesa de parrilla compartida, con una alternativa vegetariana para que el encuentro no dependa de comer carne. La sobremesa reúne al grupo alrededor del fogón, sin apuro y con abrigo a mano. La carpa que aparece en la fotografía acompaña la ambientación: este plan termina esa misma jornada y no ofrece alojamiento. Es una experiencia ficticia de demostración; la zona orienta el relato, pero no identifica un establecimiento ni una fecha real.",
+    "zona": "Bariloche, Río Negro",
+    "duracion": "5 h",
+    "precio": 85000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Día",
+      "Noche"
+    ],
+    "imagen": "plan-fogon-junto-al-lago",
+    "alt": "Carpa y sillas junto a un fogón frente al lago.",
+    "incluye": [
+      "Recepción",
+      "Menú de parrilla y opción vegetariana",
+      "Bebida sin alcohol",
+      "Sector de descanso"
+    ],
+    "no_incluye": [
+      "Alojamiento",
+      "Traslado"
+    ],
+    "itinerario": [
+      "Llegada y recepción",
+      "Tarde junto al lago",
+      "Asado compartido",
+      "Sobremesa al fogón"
+    ],
+    "recomendaciones": "Llevá abrigo, calzado cerrado y una capa para la tarde. Informá restricciones alimentarias antes de participar.",
+    "condiciones": "El viento o la lluvia pueden requerir reprogramación. La carpa es ambientación: no se ofrece una noche de camping.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 16,
+    "archivo": "asado-camping.jpeg"
+  },
+  {
+    "id": "plan-secretos-del-fuego",
+    "nombre": "Secretos del fuego",
+    "categoria": "Al aire libre",
+    "descripcion": "Descubrí la cocina al fuego con las manos en la preparación.",
+    "detalle": "Entender el fuego también es aprender a esperar. En este taller imaginado en San Antonio de Areco, la preparación del almuerzo sirve como hilo conductor para conocer técnicas y participar de una cocina compartida. El encuentro comienza con una introducción a los materiales y las tareas, continúa con ingredientes que se preparan en equipo y termina alrededor de la mesa. No se trata de una competencia ni hace falta llegar sabiendo cocinar: la idea es observar, probar y colaborar siguiendo las indicaciones. Los utensilios y la degustación forman parte de la propuesta. Esta actividad es una demostración académica, sin cocinero, establecimiento o fecha reales asociados; el exterior queda sujeto al clima.",
+    "zona": "San Antonio de Areco, Buenos Aires",
+    "duracion": "4 h",
+    "precio": 95000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Día"
+    ],
+    "imagen": "plan-secretos-del-fuego",
+    "alt": "Persona cocinando sobre parrillas al aire libre.",
+    "incluye": [
+      "Introducción a técnicas",
+      "Ingredientes y utensilios",
+      "Degustación",
+      "Bebida sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Bebidas adicionales"
+    ],
+    "itinerario": [
+      "Bienvenida y técnicas",
+      "Preparación en equipo",
+      "Cocción al fuego",
+      "Almuerzo compartido"
+    ],
+    "recomendaciones": "Usá calzado cerrado y ropa cómoda. Informá alergias o preferencias alimentarias.",
+    "condiciones": "Actividad participativa alrededor del fuego; seguí las indicaciones de acompañamiento. Con clima adverso, se reprograma.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 12,
+    "archivo": "asado-experience.jpeg"
+  },
+  {
+    "id": "plan-bajo-las-auroras",
+    "nombre": "Bajo las auroras",
+    "categoria": "Al aire libre",
+    "descripcion": "Una noche para mirar el cielo y buscar luces del norte.",
+    "detalle": "Mirar el cielo del norte requiere paciencia y una buena cantidad de abrigo. Esta salida ficticia toma Tromsø como zona ilustrativa y propone una noche de observación compartida, con acompañamiento y traslado local desde un punto de encuentro. Durante la salida hay tiempo para familiarizarse con la oscuridad, buscar colores en el horizonte y hacer una pausa con una bebida caliente. El atractivo está en la búsqueda y en el paisaje nocturno, no en una promesa de avistamiento: las auroras dependen de condiciones naturales que no se pueden asegurar. La propuesta no incluye viaje internacional ni hospedaje. Como parte del TP, no corresponde a una excursión contratada ni a una fecha real.",
+    "zona": "Tromsø, Noruega",
+    "duracion": "4 h",
+    "precio": 240000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Noche"
+    ],
+    "imagen": "plan-bajo-las-auroras",
+    "alt": "Dos siluetas bajo un cielo iluminado por auroras verdes.",
+    "incluye": [
+      "Acompañamiento",
+      "Traslado local desde punto de encuentro",
+      "Bebida caliente"
+    ],
+    "no_incluye": [
+      "Vuelos",
+      "Alojamiento"
+    ],
+    "itinerario": [
+      "Encuentro y preparación",
+      "Traslado local",
+      "Observación del cielo",
+      "Regreso"
+    ],
+    "recomendaciones": "Llevá abrigo térmico, guantes y calzado adecuado al frío.",
+    "condiciones": "Las auroras no están garantizadas: dependen del cielo y la actividad natural. El clima puede requerir reprogramación.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 8,
+    "archivo": "auroras-pareja.jpeg"
+  },
+  {
+    "id": "plan-entre-copas-y-quesos",
+    "nombre": "Entre copas y quesos",
+    "categoria": "Al aire libre / Interior",
+    "descripcion": "Un recorrido entre aromas, copas y bocados para compartir.",
+    "detalle": "Una copa y un bocado pueden abrir muchas conversaciones. Esta propuesta ficticia situada en Luján de Cuyo combina un recorrido de bodega con una mesa donde explorar aromas y contrastes. Primero se presenta el espacio y luego se pasa a tres degustaciones acompañadas por quesos, con tiempo para intercambiar impresiones sin necesitar vocabulario especializado. Quienes prefieran no tomar alcohol tienen una alternativa para participar del mismo encuentro. El recorrido combina momentos interiores y exteriores, de modo que el clima puede cambiar su organización. No se nombra una bodega real ni se prometen etiquetas concretas: es una experiencia de demostración, pensada para practicar una reserva y no para comercializar una visita existente.",
+    "zona": "Luján de Cuyo, Mendoza",
+    "duracion": "2 h 30 min",
+    "precio": 68000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Interior",
+      "Día"
+    ],
+    "imagen": "plan-entre-copas-y-quesos",
+    "alt": "Tabla de quesos y copas en una mesa frente a un viñedo.",
+    "incluye": [
+      "Visita de bodega",
+      "Tres degustaciones",
+      "Tabla de quesos",
+      "Alternativa sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Compras de botellas"
+    ],
+    "itinerario": [
+      "Bienvenida",
+      "Recorrido de bodega",
+      "Degustaciones",
+      "Tabla compartida"
+    ],
+    "recomendaciones": "Informá alergias y restricciones alimentarias; el maridaje contiene lácteos.",
+    "condiciones": "Alcohol solo para mayores de 18 años; se puede participar sin beber alcohol. El tramo exterior se adapta o reprograma por clima.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 16,
+    "archivo": "bodega-queso.jpeg"
+  },
+  {
+    "id": "plan-senderos-compartidos",
+    "nombre": "Senderos compartidos",
+    "categoria": "Al aire libre",
+    "descripcion": "Caminá a otro ritmo, con pausas para mirar el paisaje.",
+    "detalle": "Caminar en compañía permite descubrir detalles que a veces pasan inadvertidos. Este recorrido ficticio de dificultad moderada toma Bariloche como referencia e intercala tramos de caminata con pausas para observar el paisaje y recuperar el ritmo. La jornada incluye acompañamiento y una vianda para compartir un descanso, mientras cada participante lleva su propia agua, abrigo y calzado adecuado. La propuesta exige considerar la condición física personal y consultar la dificultad antes de participar; no promete un recorrido accesible para cualquier situación. La fotografía es ilustrativa y no permite identificar el sendero presentado. Se trata de una demostración sin ruta comercial ni fecha confirmadas, y las condiciones meteorológicas pueden requerir reprogramación.",
+    "zona": "Bariloche, Río Negro",
+    "duracion": "5 h",
+    "precio": 55000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Día"
+    ],
+    "imagen": "plan-senderos-compartidos",
+    "alt": "Dos caminantes en un sendero rodeado de montañas.",
+    "incluye": [
+      "Acompañamiento",
+      "Vianda"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Equipo personal"
+    ],
+    "itinerario": [
+      "Preparación del recorrido",
+      "Caminata moderada",
+      "Pausa panorámica y vianda",
+      "Regreso"
+    ],
+    "recomendaciones": "Llevá calzado de trekking, abrigo por capas y agua propia. Consultá la exigencia antes de participar.",
+    "condiciones": "Dificultad moderada; el recorrido se reprograma con clima adverso. La fotografía es ilustrativa y no identifica el destino.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 8,
+    "archivo": "trecking-montaña.jpeg"
+  },
+  {
+    "id": "plan-disena-tu-tote",
+    "nombre": "Diseñá tu tote",
+    "categoria": "Interior",
+    "descripcion": "Transformá una bolsa de algodón en una pieza propia.",
+    "detalle": "Una bolsa de algodón se convierte en una superficie para probar ideas. Este taller ficticio en Palermo invita a elegir colores, hacer un boceto sencillo y explorar la pintura textil con herramientas compartidas. No hay un diseño obligatorio: podés trabajar con formas, palabras o pequeñas ilustraciones, a tu ritmo y con orientación durante el proceso. La merienda propone una pausa para mirar lo que está creando el resto y volver a la mesa con nuevas ideas. Al finalizar quedan indicaciones para cuidar la pintura y respetar el secado. La experiencia no requiere práctica artística previa y forma parte de una demo académica, sin taller comercial ni dirección exacta asociados.",
+    "zona": "Palermo, CABA",
+    "duracion": "2 h",
+    "precio": 32000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Interior",
+      "Día"
+    ],
+    "imagen": "plan-disena-tu-tote",
+    "alt": "Bolsas de tela pintadas y materiales de un taller textil.",
+    "incluye": [
+      "Tote de algodón",
+      "Pinturas y herramientas",
+      "Guía",
+      "Merienda"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Materiales extra"
+    ],
+    "itinerario": [
+      "Ideas y bocetos",
+      "Prueba de técnicas",
+      "Pintura de la tote",
+      "Merienda y cierre"
+    ],
+    "recomendaciones": "Traé ropa que pueda mancharse. Informá restricciones alimentarias para la merienda.",
+    "condiciones": "No hace falta experiencia previa. Se realiza en interior; respetá los tiempos de secado indicados.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 12,
+    "archivo": "totebags.jpeg"
+  },
+  {
+    "id": "plan-pizza-entre-amigos",
+    "nombre": "Pizza entre amigos",
+    "categoria": "Interior",
+    "descripcion": "Amasá, combiná sabores y compartí pizzas recién hechas.",
+    "detalle": "La noche empieza con harina sobre la mesa y termina con pizzas para compartir. En esta propuesta ficticia de Villa Crespo, el grupo participa en la preparación de la masa, combina ingredientes y acompaña la cocción antes de sentarse a comer. El taller busca que cada persona encuentre una tarea, incluso si nunca amasó, y que la cena sea el resultado de esa colaboración. Los materiales y una bebida sin alcohol están incluidos; las preferencias alimentarias se conversan antes porque se trabaja con ingredientes que pueden contener alérgenos. No hay una pizzería real detrás de la propuesta: es una experiencia de demostración sin fecha ni proveedor contratado, pensada para recorrer el flujo de reserva.",
+    "zona": "Villa Crespo, CABA",
+    "duracion": "3 h",
+    "precio": 45000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Interior",
+      "Noche"
+    ],
+    "imagen": "plan-pizza-entre-amigos",
+    "alt": "Pizzas caseras y participantes alrededor de una mesa.",
+    "incluye": [
+      "Ingredientes",
+      "Utensilios",
+      "Taller",
+      "Bebida sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Bebidas adicionales"
+    ],
+    "itinerario": [
+      "Preparación de masa",
+      "Elección de ingredientes",
+      "Cocción",
+      "Mesa compartida"
+    ],
+    "recomendaciones": "Usá calzado cerrado y recogé el pelo. Informá alergias: se trabaja con harina y lácteos.",
+    "condiciones": "No se requiere experiencia de cocina. No se garantiza un espacio libre de alérgenos.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 12,
+    "archivo": "pizzas-caseras.jpeg"
+  },
+  {
+    "id": "plan-pinceles-y-picada",
+    "nombre": "Pinceles y picada",
+    "categoria": "Interior",
+    "descripcion": "Pintura libre, una mesa compartida y tiempo para crear.",
+    "detalle": "No hace falta tener una idea cerrada para empezar a pintar. Este encuentro ficticio en Chacarita propone una mesa con soportes, colores y materiales donde cada participante pueda explorar una imagen propia. La guía acompaña las decisiones sin imponer un resultado, y una picada compartida invita a hacer pausas entre pinceladas. El objetivo es disfrutar del proceso y de la conversación, tanto en pareja como con amigos, sin convertir la actividad en una evaluación artística. Cada persona se lleva su obra al terminar, teniendo en cuenta que algunas partes pueden seguir húmedas. La propuesta es académica: no identifica un espacio comercial real ni garantiza un menú particular para restricciones alimentarias.",
+    "zona": "Chacarita, CABA",
+    "duracion": "2 h 30 min",
+    "precio": 42000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Interior",
+      "Noche"
+    ],
+    "imagen": "plan-pinceles-y-picada",
+    "alt": "Materiales de pintura y picada sobre una mesa iluminada.",
+    "incluye": [
+      "Soporte y pinturas",
+      "Materiales y guía",
+      "Picada",
+      "Bebida sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Enmarcado"
+    ],
+    "itinerario": [
+      "Elección de colores",
+      "Primeros trazos",
+      "Pintura y picada",
+      "Cierre y retiro de obra"
+    ],
+    "recomendaciones": "Usá ropa que pueda mancharse e informá restricciones alimentarias.",
+    "condiciones": "No requiere conocimientos de pintura. Cada participante se lleva su obra; protegela mientras termina de secar.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 12,
+    "archivo": "pintura-picada.jpeg"
+  },
+  {
+    "id": "plan-picnic-frente-al-mar",
+    "nombre": "Picnic frente al mar",
+    "categoria": "Al aire libre",
+    "descripcion": "Una manta, algo rico y el mar como compañía.",
+    "detalle": "La arena, el sonido del agua y una manta organizan esta pausa ficticia frente al mar. El picnic toma Mar del Plata como zona ilustrativa y propone una tarde con montaje preparado, almohadones y una tabla para compartir. La fruta y las bebidas sin alcohol acompañan un encuentro que deja espacio para conversar, descansar y mirar el horizonte, sin sumar actividades obligatorias. Conviene llevar abrigo aunque el día parezca cálido, porque el viento puede cambiar la sensación de temperatura. No incluye actividades acuáticas ni traslado. Esta experiencia de demostración no corresponde a un balneario ni a una reserva real; el estado del tiempo determina si habría que reprogramar el encuentro.",
+    "zona": "Mar del Plata, Buenos Aires",
+    "duracion": "2 h 30 min",
+    "precio": 39000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Día"
+    ],
+    "imagen": "plan-picnic-frente-al-mar",
+    "alt": "Fruta, copas y bocados sobre una manta en la arena.",
+    "incluye": [
+      "Montaje, manta y almohadones",
+      "Tabla para compartir",
+      "Fruta",
+      "Bebida sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Actividades acuáticas"
+    ],
+    "itinerario": [
+      "Recepción del picnic",
+      "Mesa frente al mar",
+      "Tiempo de descanso",
+      "Cierre"
+    ],
+    "recomendaciones": "Llevá abrigo liviano y protección solar. Informá restricciones alimentarias.",
+    "condiciones": "El viento o la lluvia requieren reprogramación. No incluye acceso a actividades en el agua.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 8,
+    "archivo": "picnic-playa.jpeg"
+  },
+  {
+    "id": "plan-picnic-bajo-las-estrellas",
+    "nombre": "Picnic bajo las estrellas",
+    "categoria": "Al aire libre",
+    "descripcion": "Un jardín, luces cálidas y una noche para conversar.",
+    "detalle": "Cuando baja la luz, un jardín puede convertirse en un lugar distinto para encontrarse. Este picnic ficticio en Tigre combina mantas, una picada y una ambientación cálida que acompaña la conversación sin llenar la noche de actividades. La llegada permite acomodarse y compartir los primeros bocados; después queda tiempo para una sobremesa tranquila y para disfrutar del aire libre. El nombre invita a mirar hacia arriba, pero no promete estrellas visibles ni un cielo despejado. El abrigo y el repelente ayudan a prepararse para la propuesta. Es una experiencia de demostración, sin jardín comercial ni fecha reales, y las condiciones de lluvia o viento pueden llevar a reprogramarla.",
+    "zona": "Tigre, Buenos Aires",
+    "duracion": "2 h 30 min",
+    "precio": 44000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Noche"
+    ],
+    "imagen": "plan-picnic-bajo-las-estrellas",
+    "alt": "Picnic con almohadones en un jardín nocturno.",
+    "incluye": [
+      "Montaje",
+      "Mantas",
+      "Picada",
+      "Bebida sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Alojamiento"
+    ],
+    "itinerario": [
+      "Llegada al jardín",
+      "Picada compartida",
+      "Sobremesa bajo las luces",
+      "Cierre"
+    ],
+    "recomendaciones": "Traé abrigo y repelente. Informá restricciones alimentarias.",
+    "condiciones": "No se promete cielo despejado. Con lluvia o viento fuerte, se reprograma.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 8,
+    "archivo": "picnic-noche.jpeg"
+  },
+  {
+    "id": "plan-una-pausa-al-sol",
+    "nombre": "Una pausa al sol",
+    "categoria": "Al aire libre",
+    "descripcion": "Frená la rutina con una canasta y un rato al aire libre.",
+    "detalle": "Hay planes que necesitan poco más que una canasta y tiempo libre. Esta pausa ficticia en un espacio verde de San Isidro reúne bocados dulces y salados, fruta y limonada sobre una manta. La idea es llegar, acomodarse y decidir el ritmo del encuentro sin una agenda cargada: conversar, leer un rato o simplemente mirar alrededor. La canasta forma parte del montaje y no hace falta llevar vajilla propia para la propuesta. Sí conviene considerar protección solar y comentar restricciones alimentarias antes de participar. Como experiencia académica, no representa una oferta en un parque concreto ni asegura buen tiempo; si el clima no acompaña, corresponde pensar una reprogramación.",
+    "zona": "San Isidro, Buenos Aires",
+    "duracion": "2 h",
+    "precio": 29000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Día"
+    ],
+    "imagen": "plan-una-pausa-al-sol",
+    "alt": "Canastas y comida sobre una manta junto a un espacio verde.",
+    "incluye": [
+      "Canasta y manta",
+      "Bocados dulces y salados",
+      "Fruta",
+      "Limonada"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Actividades adicionales"
+    ],
+    "itinerario": [
+      "Recepción de la canasta",
+      "Picnic en el verde",
+      "Tiempo libre",
+      "Cierre"
+    ],
+    "recomendaciones": "Llevá protección solar y ropa cómoda. Avisá alergias o preferencias alimentarias.",
+    "condiciones": "El picnic depende del clima; con condiciones adversas se reprograma. No se garantiza sol.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 8,
+    "archivo": "picnic-dia.jpeg"
+  },
+  {
+    "id": "plan-pasta-y-aperol",
+    "nombre": "Pasta y Aperol",
+    "categoria": "Interior",
+    "descripcion": "De la masa a la mesa: una cena hecha entre todos.",
+    "detalle": "Estirar una masa y verla transformarse en cena es el centro de este encuentro ficticio en Colegiales. El taller propone preparar pasta fresca en compañía, conocer el proceso de formado y participar de la cocción antes de pasar a la mesa. Un aperitivo acompaña el momento social, con una alternativa sin alcohol para quienes la elijan. No se espera experiencia culinaria previa: las tareas se presentan de manera gradual y con utensilios disponibles para trabajar. La harina, el huevo y otros ingredientes requieren avisar alergias de antemano. Esta es una propuesta de demostración sin cocina comercial ni fecha reales; el nombre describe el plan y no una colaboración con una marca.",
+    "zona": "Colegiales, CABA",
+    "duracion": "3 h",
+    "precio": 58000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Interior",
+      "Noche"
+    ],
+    "imagen": "plan-pasta-y-aperol",
+    "alt": "Manos preparando pasta fresca junto a copas de aperitivo.",
+    "incluye": [
+      "Ingredientes y utensilios",
+      "Guía",
+      "Cena de pasta fresca",
+      "Un aperitivo por persona y alternativa sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Bebidas extra"
+    ],
+    "itinerario": [
+      "Preparación de masa",
+      "Formado de pasta",
+      "Cocción",
+      "Cena compartida"
+    ],
+    "recomendaciones": "Usá ropa cómoda y calzado cerrado. Informá alergias a harina, huevo o lácteos.",
+    "condiciones": "Alcohol solo para mayores de 18 años, con opción sin alcohol. No se requiere experiencia previa.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 12,
+    "archivo": "pasta-aperol.jpeg"
+  },
+  {
+    "id": "plan-tu-propia-mini-torta",
+    "nombre": "Tu propia mini torta",
+    "categoria": "Interior",
+    "descripcion": "Elegí rellenos, decorá y llevate una pequeña creación.",
+    "detalle": "Una torta pequeña ofrece mucho espacio para jugar con colores y texturas. En este taller ficticio de Belgrano se parte de un bizcochuelo ya preparado, para dedicar el encuentro al relleno, el armado y la decoración. Cada participante elige cómo terminar su pieza con las herramientas disponibles, mientras recibe orientación para organizar las capas y los detalles. El café o té acompaña una pausa antes de colocar la creación en su caja para llevar. No incluye la elaboración y el horneado del bizcochuelo, ni exige conocimientos de pastelería. La propuesta pertenece a una demo académica sin local real asociado; las restricciones alimentarias deben consultarse y no se presupone ausencia de alérgenos.",
+    "zona": "Belgrano, CABA",
+    "duracion": "2 h 30 min",
+    "precio": 46000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Interior",
+      "Día"
+    ],
+    "imagen": "plan-tu-propia-mini-torta",
+    "alt": "Mini tortas y herramientas de decoración en una mesa.",
+    "incluye": [
+      "Bizcochuelo preparado y rellenos",
+      "Herramientas y decoración",
+      "Caja para llevar",
+      "Café o té"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Horneado del bizcochuelo"
+    ],
+    "itinerario": [
+      "Elección de relleno",
+      "Armado de capas",
+      "Decoración",
+      "Caja y merienda"
+    ],
+    "recomendaciones": "Informá alergias y transportá la torta con cuidado.",
+    "condiciones": "Se parte de un bizcochuelo preparado; no se hornea durante el taller. No requiere experiencia previa.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 12,
+    "archivo": "make-your-pastry.jpeg"
+  },
+  {
+    "id": "plan-noche-de-luces",
+    "nombre": "Noche de luces",
+    "categoria": "Al aire libre",
+    "descripcion": "Un paseo nocturno entre luces y música suave.",
+    "detalle": "La luz cambia la forma de recorrer un jardín por la noche. Esta propuesta ficticia en Pilar imagina una instalación controlada con distintos puntos de iluminación y música suave, para caminar despacio y detenerse donde aparezca un detalle interesante. Una bebida sin alcohol acompaña una pausa durante el recorrido, que no requiere seguir una actividad competitiva ni participar de un espectáculo. La imagen funciona solamente como inspiración visual: no se ofrecen globos con fuego ni liberaciones al cielo. Tampoco se afirma relación con un festival existente. Es una experiencia académica sin sede ni fecha reales, sujeta a reprogramación si la lluvia o el viento impiden disfrutar del espacio exterior.",
+    "zona": "Pilar, Buenos Aires",
+    "duracion": "2 h",
+    "precio": 35000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Noche"
+    ],
+    "imagen": "plan-noche-de-luces",
+    "alt": "Luces cálidas suspendidas en un cielo nocturno, imagen de inspiración.",
+    "incluye": [
+      "Acceso",
+      "Instalación de luces",
+      "Bebida sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Actividades con fuego"
+    ],
+    "itinerario": [
+      "Recepción",
+      "Recorrido lumínico",
+      "Pausa con música",
+      "Cierre"
+    ],
+    "recomendaciones": "Usá calzado cómodo y llevá abrigo.",
+    "condiciones": "Instalación controlada: no se liberan globos con fuego. La imagen es inspiración, no un festival real. Se reprograma por clima adverso.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 20,
+    "archivo": "luces.jpeg"
+  },
+  {
+    "id": "plan-amanecer-en-globo",
+    "nombre": "Amanecer en globo",
+    "categoria": "Al aire libre",
+    "descripcion": "Contemplá el amanecer desde una perspectiva distinta.",
+    "detalle": "Ver cómo cambia la luz al amanecer es el hilo de esta experiencia ficticia en Capadocia. La propuesta reúne un traslado local, el tiempo de preparación y una actividad de vuelo aproximada de cuarenta y cinco a sesenta minutos, seguida por un desayuno. Las tres horas indicadas abarcan el conjunto del encuentro, no tres horas de vuelo. El clima puede modificar la organización o hacer necesaria una reprogramación, por lo que no se promete un despegue en cualquier condición. Cada participante debe consultar previamente las condiciones personales de participación. Este plan académico no identifica un operador real ni atribuye certificaciones, y no incluye vuelos internacionales, viaje al destino ni alojamiento.",
+    "zona": "Capadocia, Turquía",
+    "duracion": "3 h en total",
+    "precio": 220000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Día"
+    ],
+    "imagen": "plan-amanecer-en-globo",
+    "alt": "Globos aerostáticos sobre un paisaje rocoso al amanecer.",
+    "incluye": [
+      "Traslado local",
+      "Preparación",
+      "Vuelo aproximado de 45–60 minutos",
+      "Desayuno"
+    ],
+    "no_incluye": [
+      "Vuelos internacionales",
+      "Alojamiento"
+    ],
+    "itinerario": [
+      "Traslado y preparación",
+      "Indicaciones iniciales",
+      "Vuelo al amanecer",
+      "Desayuno"
+    ],
+    "recomendaciones": "Llevá abrigo y calzado cerrado. Consultá condiciones personales de participación antes de reservar.",
+    "condiciones": "Sujeto a condiciones meteorológicas y reprogramación. No se atribuyen certificaciones a operadores ficticios.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 8,
+    "archivo": "globo-aerostatico.jpeg"
+  },
+  {
+    "id": "plan-tarde-a-bordo",
+    "nombre": "Tarde a bordo",
+    "categoria": "Al aire libre",
+    "descripcion": "Navegación compartida, música y horizonte abierto.",
+    "detalle": "El horizonte y el movimiento del agua marcan esta tarde ficticia frente a la costa de Mallorca. La propuesta es una salida compartida en velero, con tripulación, música y un aperitivo para acompañar la navegación. Después del embarque y las indicaciones iniciales, el tiempo se reparte entre observar el paisaje y conversar a bordo, sin prometer paradas o actividades acuáticas específicas. Las bebidas incluidas son sin alcohol y conviene avisar restricciones alimentarias antes de participar. La duración contempla también el regreso, mientras que el viaje hasta el destino queda por cuenta propia. Se trata de una demostración académica sin embarcación contratada ni fecha real, cuya realización dependería del estado del mar.",
+    "zona": "Costa de Mallorca, España",
+    "duracion": "4 h",
+    "precio": 110000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Día"
+    ],
+    "imagen": "plan-tarde-a-bordo",
+    "alt": "Vista desde arriba de un velero sobre agua turquesa.",
+    "incluye": [
+      "Navegación en velero",
+      "Tripulación",
+      "Aperitivo",
+      "Bebidas sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslados al destino",
+      "Alojamiento"
+    ],
+    "itinerario": [
+      "Embarque e indicaciones",
+      "Navegación",
+      "Aperitivo a bordo",
+      "Regreso"
+    ],
+    "recomendaciones": "Llevá protección solar, abrigo liviano y calzado adecuado. Informá restricciones alimentarias.",
+    "condiciones": "Seguí las indicaciones a bordo. Las condiciones del mar pueden requerir reprogramación; no se prometen actividades acuáticas.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 8,
+    "archivo": "fiesta-lancha.jpeg"
+  },
+  {
+    "id": "plan-mesa-de-autor",
+    "nombre": "Mesa de autor",
+    "categoria": "Interior",
+    "descripcion": "Cinco pasos para descubrir sabores en una mesa compartida.",
+    "detalle": "Una cena puede ser una sucesión de pequeñas sorpresas. Esta mesa ficticia en Recoleta propone un menú degustación de cinco pasos, con espacio entre platos para descubrir combinaciones y compartir impresiones. La experiencia empieza con una recepción, continúa con los primeros sabores y platos centrales, y termina con un cierre dulce. El agua y una bebida sin alcohol acompañan el recorrido sin exigir un maridaje alcohólico. Las alergias y preferencias necesitan conversarse antes, porque no se garantiza un entorno libre de alérgenos. No se atribuyen premios, estrellas ni relaciones con chefs o restaurantes reales: es una propuesta de demostración académica, sin establecimiento comercial ni fecha de servicio confirmados.",
+    "zona": "Recoleta, CABA",
+    "duracion": "2 h 30 min",
+    "precio": 150000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Interior",
+      "Noche"
+    ],
+    "imagen": "plan-mesa-de-autor",
+    "alt": "Persona terminando el emplatado de un plato de degustación.",
+    "incluye": [
+      "Menú degustación de cinco pasos",
+      "Agua",
+      "Bebida sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Bebidas adicionales"
+    ],
+    "itinerario": [
+      "Recepción",
+      "Primeros pasos",
+      "Platos centrales",
+      "Cierre dulce"
+    ],
+    "recomendaciones": "Informá alergias y preferencias alimentarias antes de participar.",
+    "condiciones": "Propuesta ficticia sin vínculo con restaurantes, chefs ni distinciones reales. No se garantiza ausencia de alérgenos.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 16,
+    "archivo": "experiencia-michelin.jpeg"
+  },
+  {
+    "id": "plan-cocina-de-autor-hecha-por-vos",
+    "nombre": "Cocina de autor, hecha por vos",
+    "categoria": "Interior",
+    "descripcion": "Prepará un menú de tres pasos y compartí el resultado.",
+    "detalle": "Preparar un menú completo ayuda a mirar la cocina como un trabajo en equipo. Esta clase ficticia en Palermo organiza un recorrido de tres pasos, desde la planificación y las primeras técnicas hasta el emplatado y la degustación. Los ingredientes y materiales están incluidos para que la atención pueda estar en las tareas y en compartir decisiones. Al final, un recetario permite repasar lo trabajado y guardar ideas para otra ocasión. No es necesario llegar con experiencia, aunque sí seguir las indicaciones y comunicar restricciones alimentarias. La propuesta forma parte de una demostración sin escuela ni chef real asociados; no promete una certificación profesional ni una formación gastronómica acreditada.",
+    "zona": "Palermo, CABA",
+    "duracion": "3 h 30 min",
+    "precio": 72000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Interior",
+      "Día",
+      "Noche"
+    ],
+    "imagen": "plan-cocina-de-autor-hecha-por-vos",
+    "alt": "Mesa larga preparada para una experiencia gastronómica.",
+    "incluye": [
+      "Ingredientes y materiales",
+      "Guía",
+      "Degustación",
+      "Recetario"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Bebidas adicionales"
+    ],
+    "itinerario": [
+      "Organización y técnicas",
+      "Preparación en equipo",
+      "Emplatado",
+      "Degustación y recetario"
+    ],
+    "recomendaciones": "Usá calzado cerrado y pelo recogido. Informá alergias y preferencias alimentarias.",
+    "condiciones": "Clase participativa sin conocimientos previos requeridos. La propuesta no implica formación profesional ni certificación.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 12,
+    "archivo": "clase-cocina-gourmet.jpeg"
+  },
+  {
+    "id": "plan-cine-para-dos",
+    "nombre": "Cine para dos",
+    "categoria": "Al aire libre",
+    "descripcion": "Un rincón al aire libre para compartir una película de a dos.",
+    "detalle": "Un pequeño rincón de jardín alcanza para cambiar una noche de película. Esta propuesta ficticia en San Isidro prepara un espacio para una pareja, con proyección, mantas, pochoclos y una bebida sin alcohol para cada persona. La llegada permite acomodarse antes de empezar la función y disfrutar del entorno sin compartir el sector con un grupo más grande. La reserva es siempre para dos: el valor ilustrativo de cuarenta y ocho mil pesos por persona suma noventa y seis mil en total. No se anuncian títulos concretos ni una programación comercial. Es una experiencia de demostración sin fecha real; al ser exterior, el clima puede hacer necesaria una reprogramación.",
+    "zona": "San Isidro, Buenos Aires",
+    "duracion": "3 h",
+    "precio": 48000,
+    "filtros": [
+      "En pareja",
+      "Al aire libre",
+      "Noche"
+    ],
+    "imagen": "plan-cine-para-dos",
+    "alt": "Pantalla de cine y almohadones en un rincón de jardín.",
+    "incluye": [
+      "Espacio para dos y proyección",
+      "Mantas",
+      "Pochoclos",
+      "Bebida sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Cena"
+    ],
+    "itinerario": [
+      "Recepción de la pareja",
+      "Preparación del espacio",
+      "Proyección",
+      "Cierre"
+    ],
+    "recomendaciones": "Llevá abrigo e informá restricciones alimentarias.",
+    "condiciones": "Reserva obligatoria de dos personas: $96.000 en total. Sujeta a reprogramación por clima; no se prometen títulos específicos.",
+    "cantidad_fija": 2,
+    "estado": "publicado",
+    "capacidad": 2,
+    "archivo": "cine-privado.jpeg"
+  },
+  {
+    "id": "plan-cine-bajo-los-arboles",
+    "nombre": "Cine bajo los árboles",
+    "categoria": "Al aire libre",
+    "descripcion": "Una función compartida en un jardín iluminado.",
+    "detalle": "Compartir una película también puede ser una excusa para encontrarse al aire libre. Esta función ficticia en un jardín de Pilar propone asientos tipo puff, una proyección y pochoclos para acomodarse bajo los árboles. La llegada deja tiempo para elegir lugar y conversar antes de que empiece la pantalla, mientras una bebida sin alcohol acompaña la función. Se recomienda llevar abrigo, porque la temperatura puede bajar durante la noche. No se anuncian títulos de películas ni se atribuyen licencias que no estén comprobadas. La propuesta pertenece a una demostración académica sin cine comercial ni fecha reales, y contempla reprogramación cuando el clima no permita utilizar el jardín.",
+    "zona": "Pilar, Buenos Aires",
+    "duracion": "3 h",
+    "precio": 24000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Noche"
+    ],
+    "imagen": "plan-cine-bajo-los-arboles",
+    "alt": "Puffs frente a una pantalla de cine bajo árboles y luces.",
+    "incluye": [
+      "Asiento tipo puff",
+      "Proyección",
+      "Pochoclos",
+      "Bebida sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Cena"
+    ],
+    "itinerario": [
+      "Llegada al jardín",
+      "Ubicación y pochoclos",
+      "Proyección",
+      "Cierre"
+    ],
+    "recomendaciones": "Llevá abrigo y repelente; informá restricciones alimentarias.",
+    "condiciones": "Se reprograma con clima adverso. No se prometen películas concretas ni licencias no comprobadas.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 20,
+    "archivo": "cine-grupal.jpeg"
+  },
+  {
+    "id": "plan-ceramica-con-tu-sello",
+    "nombre": "Cerámica con tu sello",
+    "categoria": "Interior",
+    "descripcion": "Dale forma a una pieza pequeña con tu propia impronta.",
+    "detalle": "La arcilla invita a bajar el ritmo y prestar atención a las manos. Este taller ficticio en Villa Crespo propone modelar y decorar una pieza pequeña, explorando formas y marcas propias con herramientas disponibles y orientación durante el proceso. El encuentro se concentra en la creación, sin exigir conocimientos previos ni un resultado idéntico para todo el grupo. La pieza no está lista para llevar al terminar: necesita un proceso posterior de terminación y un retiro estimado entre quince y veinte días después. Esa espera es parte de trabajar con cerámica. Como propuesta académica, no identifica un taller real ni una fecha de retiro efectiva; tampoco incluye el envío de la pieza.",
+    "zona": "Villa Crespo, CABA",
+    "duracion": "2 h 30 min",
+    "precio": 38000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Interior",
+      "Día"
+    ],
+    "imagen": "plan-ceramica-con-tu-sello",
+    "alt": "Pequeños platos y piezas de cerámica decorados sobre una mesa.",
+    "incluye": [
+      "Arcilla y herramientas",
+      "Guía",
+      "Proceso posterior de terminación"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Envío de la pieza"
+    ],
+    "itinerario": [
+      "Ideas y materiales",
+      "Modelado",
+      "Decoración",
+      "Indicaciones de retiro"
+    ],
+    "recomendaciones": "Usá ropa cómoda que pueda mancharse y uñas cortas para trabajar.",
+    "condiciones": "Retiro posterior estimado de 15–20 días. La pieza necesita terminación: no se lleva recién cocida al finalizar.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 12,
+    "archivo": "ceramica.jpeg"
+  },
+  {
+    "id": "plan-ceramica-y-vino",
+    "nombre": "Cerámica y vino",
+    "categoria": "Interior",
+    "descripcion": "Modelá, conversá y compartí una degustación sin apuro.",
+    "detalle": "La mesa reúne arcilla, herramientas y conversación en este taller ficticio de Palermo. La propuesta combina el modelado de una pieza con dos degustaciones, dejando tiempo para probar formas y decorar sin apuro. Hay una alternativa sin alcohol para participar del mismo encuentro, y no hace falta tener experiencia previa con cerámica. La guía acompaña el proceso, pero cada persona puede elegir una impronta propia. Al finalizar, la pieza queda para su terminación y se estima un retiro posterior de quince a veinte días: no se entrega cerámica recién cocida al salir. Es una demostración académica sin taller o bodega reales asociados, y el envío no forma parte de lo incluido.",
+    "zona": "Palermo, CABA",
+    "duracion": "3 h",
+    "precio": 52000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Interior",
+      "Noche"
+    ],
+    "imagen": "plan-ceramica-y-vino",
+    "alt": "Piezas de arcilla, herramientas y copas sobre una mesa.",
+    "incluye": [
+      "Materiales y guía",
+      "Terminación de pieza",
+      "Dos degustaciones",
+      "Opción sin alcohol"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Envío de la pieza"
+    ],
+    "itinerario": [
+      "Bienvenida y materiales",
+      "Modelado",
+      "Degustación y decoración",
+      "Indicaciones de retiro"
+    ],
+    "recomendaciones": "Usá ropa que pueda mancharse e informá restricciones alimentarias.",
+    "condiciones": "Alcohol solo para mayores de 18 años; alternativa sin alcohol. Retiro de la pieza estimado de 15–20 días después.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 12,
+    "archivo": "ceramica-vino.jpeg"
+  },
+  {
+    "id": "plan-a-caballo-entre-paisajes",
+    "nombre": "A caballo entre paisajes",
+    "categoria": "Al aire libre",
+    "descripcion": "Un recorrido tranquilo con una pausa para mirar alrededor.",
+    "detalle": "Un recorrido a ritmo tranquilo ofrece otra manera de mirar el paisaje. Esta cabalgata ficticia toma el Valle de Uco como referencia y comienza con la asignación de caballo, el casco y una explicación inicial antes de salir en grupo. El acompañamiento continúa durante el trayecto, que incluye una pausa panorámica y termina con una merienda. Conviene consultar las condiciones personales de participación y preparar pantalón largo y calzado cerrado. La fotografía es ilustrativa: no describe una ruta concreta ni promete cruces de ríos. Tampoco permite asegurar accesibilidad para cualquier situación. La propuesta es académica, sin prestador ni fecha reales, y puede requerir reprogramación según las condiciones meteorológicas.",
+    "zona": "Valle de Uco, Mendoza",
+    "duracion": "3 h",
+    "precio": 78000,
+    "filtros": [
+      "En pareja",
+      "Con amigos",
+      "Al aire libre",
+      "Día"
+    ],
+    "imagen": "plan-a-caballo-entre-paisajes",
+    "alt": "Caballos con jinetes en un paisaje de montaña y agua, imagen ilustrativa.",
+    "incluye": [
+      "Asignación de caballo",
+      "Casco y explicación inicial",
+      "Acompañamiento",
+      "Merienda"
+    ],
+    "no_incluye": [
+      "Traslado",
+      "Equipo personal adicional"
+    ],
+    "itinerario": [
+      "Asignación e indicaciones",
+      "Recorrido tranquilo",
+      "Pausa panorámica",
+      "Regreso y merienda"
+    ],
+    "recomendaciones": "Usá pantalón largo y calzado cerrado; consultá las condiciones personales de participación.",
+    "condiciones": "Se reprograma por clima adverso. La foto es ilustrativa: no se prometen cruces de ríos ni accesibilidad no verificada.",
+    "cantidad_fija": 0,
+    "estado": "publicado",
+    "capacidad": 8,
+    "archivo": "cabalgata.jpeg"
+  }
+]

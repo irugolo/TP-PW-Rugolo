@@ -45,3 +45,8 @@ test('pending return refresh is bounded and confirmed orders do not poll',async(
   assert.equal(refreshes,6);assert.ok(cleared>0);cleanup();
  }finally{globalThis.setInterval=originalSet;globalThis.clearInterval=originalClear;}
 });
+
+test('cine para dos: cantidad fija y total visibles antes de reservar',()=>{
+ render(<TestCheckout experience={{id:'plan-cine-para-dos',precio:48000,cantidad_fija:2}} ready/>);
+ const quantity=screen.getByLabelText('Cantidad de entradas');assert.equal(quantity.value,'2');assert.equal(quantity.readOnly,true);assert.equal(quantity.min,'2');assert.equal(quantity.max,'2');assert.match(document.body.textContent,/96.000/);
+});

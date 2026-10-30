@@ -12,6 +12,9 @@ export async function POST(request,{params}) {
   const {data:order,error}=await db.from('pedidos_demo').select('*').eq('id',id).eq('propietario',user.id).maybeSingle();
   if(error)throw error;if(!order)return Response.json({error:'Pedido no encontrado.'},{status:404});
   if(order.estado==='pagado'||order.estado==='reembolsado'||order.estado==='revision')return Response.json({error:'Este pedido no admite otro checkout.'},{status:409});
+  const experience=await db.from('experiencias').select('estado,cantidad_fija').eq('id',order.experiencia_id).maybeSingle();
+  if(experience.error)throw experience.error;
+  if(!experience.data || experience.data.estado!=='publicado' || (experience.data.cantidad_fija && experience.data.cantidad_fija!==order.cantidad))return Response.json({error:'La experiencia está archivada o la cantidad ya no es válida.'},{status:409});
   const available=await db.from('cupos_demo').select('capacidad,ocupados').eq('experiencia_id',order.experiencia_id).maybeSingle();
   if(available.error)throw available.error;
   if(!available.data||available.data.capacidad-available.data.ocupados<order.cantidad)return Response.json({error:'La experiencia ya no está disponible o no tiene cupos suficientes.'},{status:409});

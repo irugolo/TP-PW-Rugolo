@@ -1,7 +1,8 @@
 // Isolated fixture service. Never imported by application code or deployed.
 import http from 'node:http';
 import {spawn} from 'node:child_process';
-import {experiencias} from '../src/data/experiencias.js';
+import {readFileSync} from 'node:fs';
+const experiencias=JSON.parse(readFileSync('src/data/catalogo-renovado.json','utf8'));
 const fixtures=experiencias.map(x=>({...x,estado:'publicado'}));
 const server=http.createServer((req,res)=>{
  const url=new URL(req.url,'http://localhost');res.setHeader('Content-Type','application/json');

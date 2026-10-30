@@ -94,3 +94,6 @@ Ese build usa datos/configuración ficticios: nunca desplegarlo como producción
 Modelo: `auth.users` 1:1 `perfiles`; usuarios 1:N `pedidos_demo`; experiencias 1:N pedidos y 1:1 `cupos_demo`; pedidos 1:N `pagos_demo`. IDs/foreign keys, cantidades y montos controlados; snapshot del pedido conserva condiciones de compra. No borrar experiencias con pedidos: despublicarlas.
 
 La habilitación preparada para la demo pública es explícita (`MP_DEMO_PRODUCTION_ENABLED`), usa exclusivamente base Production y pagos test; actualmente no está activada. No se copian usuarios entre bases. El proyecto sigue pendiente de publicación final y no puede considerarse disponible públicamente mientras Supabase Production esté pausada.
+
+### Renovación de portada y catálogo (Preview)
+23 nuevas propuestas reservables, videos progresivos, filtros combinables y contenido editable. Alcance, migración idempotente, recursos y evidencia: [docs/renovacion-catalogo.md](docs/renovacion-catalogo.md). La producción no se modifica en esta etapa.

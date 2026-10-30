@@ -19,7 +19,7 @@ test('campos vacíos: errores asociados, foco y ningún envío', async () => {
  let calls=0;globalThis.fetch=async()=>{calls++;};
  render(<DataForm initial={emptyExperience}/>);submit();
  await waitFor(()=>assert.ok(document.activeElement === screen.getByLabelText('Identificador URL')));
- assert.equal(calls,0);assert.equal(screen.getByRole('group',{name:'Compañía'}).getAttribute('aria-invalid'),'true');
+ assert.equal(calls,0);assert.equal(screen.getByRole('group',{name:'Categorías'}).getAttribute('aria-invalid'),'true');
  for(const input of document.querySelectorAll('[aria-invalid="true"]')) assert.ok(document.getElementById(input.getAttribute('aria-describedby')).textContent);
 });
 for(const failure of ['offline','timeout','invalid-json','server']) test(`perfil ${failure}: conserva texto, termina carga y permite reintento`,async()=>{

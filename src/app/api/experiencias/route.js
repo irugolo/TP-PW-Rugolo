@@ -1,3 +1,4 @@
+import { readFilters, matchesFilters } from '../../../lib/catalog-filters';
 import { catalog } from '../../../lib/catalog';
 import { catalogParams, publicExperience } from '../../../lib/catalog-api';
 import { identity } from '../../../lib/access';
@@ -17,7 +18,7 @@ export async function GET(request) {
   const parsed = catalogParams.safeParse(Object.fromEntries(params));
   if (!parsed.success || [...params.keys()].some(key => params.getAll(key).length > 1)) return Response.json({error:'Parámetros de catálogo inválidos.'},{status:400});
   const items = await catalog();
-  const data = items.filter(item => item.estado === 'publicado' && (!parsed.data.filtro || item.filtros.includes(parsed.data.filtro))).map(publicExperience);
+  const data = items.filter(item => item.estado === 'publicado' && matchesFilters(item, readFilters(params)) && (!parsed.data.filtro || item.filtros.includes(parsed.data.filtro))).map(publicExperience);
   return Response.json({data},{headers:{'Cache-Control':'no-store'}});
  } catch (error) { return failure(error); }
 }
